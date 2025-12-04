@@ -1,0 +1,79 @@
+/**
+ * 權限管理工具
+ * 處理免費版與付費版的權限控制（預留未來擴展）
+ */
+
+import {UserPermission} from '@types/index';
+import {PERMISSION_LIMITS} from '@constants/config';
+
+/**
+ * 檢查用戶是否可以創建新清單
+ */
+export const canCreateChecklist = (
+  currentCount: number,
+  userPermission: UserPermission,
+): boolean => {
+  if (userPermission === UserPermission.PREMIUM) {
+    return true; // 付費用戶無限制
+  }
+
+  // 免費用戶限制
+  return currentCount < PERMISSION_LIMITS.FREE_CHECKLIST_COUNT;
+};
+
+/**
+ * 獲取用戶可創建的清單數量限制
+ */
+export const getChecklistLimit = (userPermission: UserPermission): number => {
+  if (userPermission === UserPermission.PREMIUM) {
+    return PERMISSION_LIMITS.PREMIUM_CHECKLIST_COUNT; // -1 表示無限
+  }
+  return PERMISSION_LIMITS.FREE_CHECKLIST_COUNT;
+};
+
+/**
+ * 檢查用戶是否為付費用戶
+ */
+export const isPremiumUser = (userPermission: UserPermission): boolean => {
+  return userPermission === UserPermission.PREMIUM;
+};
+
+/**
+ * 獲取權限描述文字
+ */
+export const getPermissionDescription = (userPermission: UserPermission): string => {
+  switch (userPermission) {
+    case UserPermission.FREE:
+      return `免費版 - 限制 ${PERMISSION_LIMITS.FREE_CHECKLIST_COUNT} 個清單`;
+    case UserPermission.PREMIUM:
+      return '付費版 - 無限清單 + 雲端同步';
+    default:
+      return '未知權限';
+  }
+};
+
+/**
+ * 檢查是否可以使用雲端同步功能（預留）
+ */
+export const canUseCloudSync = (userPermission: UserPermission): boolean => {
+  return userPermission === UserPermission.PREMIUM;
+};
+
+/**
+ * 模擬升級到付費版（未來需要對接支付系統）
+ * @returns 成功返回 true，失敗返回 false
+ */
+export const upgradeToPremium = async (): Promise<boolean> => {
+  // TODO: 對接實際的支付系統 (IAP - In-App Purchase)
+  // 這裡僅作為預留接口
+  console.log('升級到付費版的邏輯需要實現...');
+  return false;
+};
+
+/**
+ * 獲取升級提示訊息
+ */
+export const getUpgradeMessage = (): string => {
+  return '升級到付費版以解鎖無限清單和雲端同步功能！\n約 NT$ 60 或 NT$ 50/月';
+};
+
