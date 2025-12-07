@@ -1,7 +1,47 @@
 {
-  "name": "CheckMeOut",
-  "displayName": "出门点点名",
-  "version": "1.0.0",
-  "description": "專為解決「出門前遺忘重要物品」的焦慮而設計的極簡、單一情境生產力工具"
+  "expo": {
+    "name": "出門點點名",
+    "slug": "check-me-out",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#0ABAB5"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.checkmeout.app",
+      "infoPlist": {
+        "UIBackgroundModes": [
+          "remote-notification"
+        ]
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0ABAB5"
+      },
+      "package": "com.checkmeout.app",
+      "permissions": [
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-notifications",
+        {
+          "color": "#0ABAB5"
+        }
+      ]
+    ]
+  }
 }
 

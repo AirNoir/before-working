@@ -66,8 +66,8 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
     updateNotificationSettings(settings.notification.enabled, formatTime(tempTime));
   };
 
-  const handleTestNotification = () => {
-    sendTestNotification('測試通知', '這是一個測試通知，確認通知功能正常運作');
+  const handleTestNotification = async () => {
+    await sendTestNotification('測試通知', '這是一個測試通知，確認通知功能正常運作');
     Alert.alert('已發送', '已發送測試通知');
   };
 

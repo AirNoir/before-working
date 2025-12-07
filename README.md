@@ -18,13 +18,14 @@
 
 | 技術 | 版本 | 用途 |
 |------|------|------|
-| React Native | 0.73.x | 跨平台移動應用框架 |
+| Expo | ~51.0.0 | React Native 開發平台 |
+| React Native | 0.74.5 | 跨平台移動應用框架 |
 | TypeScript | 5.3+ | 類型安全的 JavaScript |
 | NativeWind | 2.0+ | Tailwind CSS for React Native |
 | Zustand | 4.4+ | 輕量級狀態管理 |
-| AsyncStorage | 1.21+ | 本地數據持久化 |
+| AsyncStorage | 1.23+ | 本地數據持久化 |
 | React Navigation | 6.x | 頁面導航 |
-| React Native Push Notification | 8.1+ | 本地推播通知 |
+| Expo Notifications | ~0.28.1 | 本地推播通知 |
 
 ## 📦 安裝與運行
 
@@ -32,31 +33,47 @@
 
 - Node.js >= 18
 - npm 或 yarn
-- iOS: Xcode 14+ 和 CocoaPods
-- Android: Android Studio 和 JDK 11+
+- Expo CLI (全局安裝): `npm install -g expo-cli` 或使用 `npx expo`
+- iOS 模擬器: Xcode (macOS only)
+- Android 模擬器: Android Studio 或使用 Expo Go App
 
 ### 安裝依賴
 
 ```bash
 # 安裝 npm 依賴
 npm install
-
-# iOS 需要額外安裝 CocoaPods 依賴
-cd ios && pod install && cd ..
 ```
 
 ### 運行應用
 
 ```bash
-# 啟動 Metro bundler
+# 啟動 Expo 開發伺服器
 npm start
+# 或
+npx expo start
 
-# 運行 iOS 模擬器
+# 在 iOS 模擬器中運行
 npm run ios
+# 或
+npx expo start --ios
 
-# 運行 Android 模擬器
+# 在 Android 模擬器中運行
 npm run android
+# 或
+npx expo start --android
+
+# 在 Expo Go App 中運行（掃描 QR Code）
+# 使用手機 Expo Go App 掃描終端顯示的 QR Code
 ```
+
+### 使用 Expo Go (推薦用於快速開發)
+
+1. 在手機上安裝 [Expo Go](https://expo.dev/client) App
+2. 運行 `npm start` 或 `npx expo start`
+3. 使用 Expo Go App 掃描終端顯示的 QR Code
+4. 應用將在手機上運行
+
+**注意**: 某些原生模組（如通知）在 Expo Go 中可能有限制，建議使用開發構建（Development Build）進行完整測試。
 
 ### 開發工具
 
@@ -178,7 +195,12 @@ check-me-out/
 
 3. **NativeWind 樣式不生效**
    - 確認 `babel.config.js` 中包含 `nativewind/babel`
-   - 清除緩存: `npm start -- --reset-cache`
+   - 清除緩存: `npx expo start -c` 或 `npm start -- --clear`
+
+4. **Expo 相關問題**
+   - 清除 Expo 緩存: `npx expo start -c`
+   - 重新安裝依賴: 刪除 `node_modules` 和 `package-lock.json`，然後 `npm install`
+   - 檢查 Expo SDK 版本: `npx expo --version`
 
 ## 📄 開發計劃
 

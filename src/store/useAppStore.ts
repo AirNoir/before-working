@@ -134,7 +134,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
       });
 
       // 設置通知
-      scheduleDailyNotification(settings.notification);
+      await scheduleDailyNotification(settings.notification);
     } catch (error) {
       console.error('Error initializing app:', error);
       // 使用默認值
@@ -334,8 +334,10 @@ export const useAppStore = create<AppStore>((set, get) => ({
         },
       };
 
-      // 更新通知調度
-      scheduleDailyNotification(newSettings.notification);
+      // 更新通知調度（異步執行，不阻塞狀態更新）
+      scheduleDailyNotification(newSettings.notification).catch(err =>
+        console.error('Error scheduling notification:', err),
+      );
 
       return {settings: newSettings};
     });

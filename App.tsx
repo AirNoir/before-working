@@ -24,7 +24,7 @@ const App: React.FC = () => {
     // 初始化應用
     const initApp = async () => {
       // 初始化通知系統
-      initializeNotifications();
+      await initializeNotifications();
       
       // 初始化應用狀態
       await initialize();
