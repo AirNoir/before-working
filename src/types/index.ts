@@ -4,6 +4,7 @@
 export interface ChecklistItem {
   id: string;
   title: string;
+  icon?: string; // MDI 图标名称，例如 'wallet', 'key', 'badge-account'
   checked: boolean;
   order: number;
   createdAt: number;

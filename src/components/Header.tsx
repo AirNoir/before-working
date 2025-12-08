@@ -4,16 +4,17 @@
 
 import React from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {COLORS} from '@constants/colors';
 
 interface HeaderProps {
   title: string;
   leftButton?: {
-    icon: string;
+    icon: string; // MDI 图标名称
     onPress: () => void;
   };
   rightButton?: {
-    icon: string;
+    icon: string; // MDI 图标名称
     onPress: () => void;
   };
 }
@@ -25,7 +26,11 @@ export const Header: React.FC<HeaderProps> = ({title, leftButton, rightButton}) 
       <View className="w-10">
         {leftButton && (
           <TouchableOpacity onPress={leftButton.onPress} className="p-2">
-            <Text className="text-white text-xl">{leftButton.icon}</Text>
+            <MaterialCommunityIcons
+              name={leftButton.icon as any}
+              size={24}
+              color={COLORS.backgroundAlt}
+            />
           </TouchableOpacity>
         )}
       </View>
@@ -37,7 +42,11 @@ export const Header: React.FC<HeaderProps> = ({title, leftButton, rightButton}) 
       <View className="w-10">
         {rightButton && (
           <TouchableOpacity onPress={rightButton.onPress} className="p-2">
-            <Text className="text-white text-xl">{rightButton.icon}</Text>
+            <MaterialCommunityIcons
+              name={rightButton.icon as any}
+              size={24}
+              color={COLORS.backgroundAlt}
+            />
           </TouchableOpacity>
         )}
       </View>

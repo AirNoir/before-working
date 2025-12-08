@@ -117,7 +117,7 @@ before-working/
 1. **Button.tsx** (~80 行)
    - 多變體按鈕
    - Loading 和 Disabled 狀態
-   - 圖標支持
+   - 圖示支持
 
 2. **ChecklistItemCard.tsx** (~130 行)
    - 可勾選的清單項目

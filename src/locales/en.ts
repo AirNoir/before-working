@@ -101,5 +101,10 @@ export default {
     badge: 'Badge',
     phone: 'Phone',
   },
+
+  // Icon Picker
+  iconPicker: {
+    title: 'Select Icon',
+  },
 };
 

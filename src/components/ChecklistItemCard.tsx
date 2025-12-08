@@ -5,12 +5,14 @@
 
 import React, {useState} from 'react';
 import {View, Text, TouchableOpacity, TextInput, Alert, StyleSheet} from 'react-native';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useTranslation} from 'react-i18next';
 import {COLORS} from '@constants/colors';
 
 interface ChecklistItemCardProps {
   id: string;
   title: string;
+  icon?: string; // MDI 图标名称
   checked: boolean;
   onToggle: () => void;
   onDelete: () => void;
@@ -21,6 +23,7 @@ interface ChecklistItemCardProps {
 
 export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
   title,
+  icon,
   checked,
   onToggle,
   onDelete,
@@ -57,8 +60,19 @@ export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
       style={styles.card}>
       {/* 拖拽句柄 */}
       <TouchableOpacity onLongPress={drag} className="mr-3 py-2">
-        <Text className="text-gray-400 text-lg">☰</Text>
+        <MaterialCommunityIcons name="drag" size={20} color={COLORS.gray[400]} />
       </TouchableOpacity>
+
+      {/* 圖示 */}
+      {icon && (
+        <View className="mr-3">
+          <MaterialCommunityIcons
+            name={icon as any}
+            size={24}
+            color={checked ? COLORS.gray[400] : COLORS.primary}
+          />
+        </View>
+      )}
 
       {/* 勾選框 */}
       <TouchableOpacity onPress={onToggle} className="mr-3">
@@ -96,7 +110,7 @@ export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
 
       {/* 刪除按鈕 */}
       <TouchableOpacity onPress={handleDelete} className="ml-3 p-2">
-        <Text className="text-warning text-lg">✕</Text>
+        <MaterialCommunityIcons name="close" size={20} color={COLORS.warning} />
       </TouchableOpacity>
     </View>
   );

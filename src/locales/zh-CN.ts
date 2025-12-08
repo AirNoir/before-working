@@ -101,5 +101,10 @@ export default {
     badge: '员工证',
     phone: '手机',
   },
+
+  // 圖示選擇器
+  iconPicker: {
+    title: '选择图标',
+  },
 };
 

@@ -33,7 +33,7 @@ interface AppStore extends AppState {
   setActiveChecklist: (checklistId: string) => void;
   
   // 清單項目操作
-  addItem: (checklistId: string, title: string) => void;
+  addItem: (checklistId: string, title: string, icon?: string) => void;
   deleteItem: (checklistId: string, itemId: string) => void;
   updateItem: (checklistId: string, itemId: string, title: string) => void;
   toggleItemCheck: (checklistId: string, itemId: string) => void;
@@ -61,6 +61,7 @@ const createDefaultChecklist = (): Checklist => {
       {
         id: generateId(),
         title: '錢包',
+        icon: 'wallet',
         checked: false,
         order: 0,
         createdAt: now,
@@ -68,6 +69,7 @@ const createDefaultChecklist = (): Checklist => {
       {
         id: generateId(),
         title: '鑰匙',
+        icon: 'key',
         checked: false,
         order: 1,
         createdAt: now,
@@ -75,6 +77,7 @@ const createDefaultChecklist = (): Checklist => {
       {
         id: generateId(),
         title: '員工證',
+        icon: 'badge-account',
         checked: false,
         order: 2,
         createdAt: now,
@@ -82,6 +85,7 @@ const createDefaultChecklist = (): Checklist => {
       {
         id: generateId(),
         title: '手機',
+        icon: 'cellphone',
         checked: false,
         order: 3,
         createdAt: now,
@@ -214,7 +218,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
 
   // 添加清單項目
-  addItem: (checklistId, title) => {
+  addItem: (checklistId, title, icon) => {
     const state = get();
     const checklist = state.checklists.find(c => c.id === checklistId);
     if (!checklist) return;
@@ -222,6 +226,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
     const newItem: ChecklistItem = {
       id: generateId(),
       title,
+      icon,
       checked: false,
       order: checklist.items.length,
       createdAt: Date.now(),

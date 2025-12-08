@@ -92,7 +92,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
     <SafeAreaView className="flex-1 bg-background">
       <Header
         title={t('settings.title')}
-        leftButton={{icon: '←', onPress: () => navigation.goBack()}}
+        leftButton={{icon: 'arrow-left', onPress: () => navigation.goBack()}}
       />
 
       <ScrollView className="flex-1">

@@ -101,5 +101,9 @@ export default {
     badge: '員工證',
     phone: '手機',
   },
-};
 
+  // 圖示選擇器
+  iconPicker: {
+    title: '選擇圖示',
+  },
+};

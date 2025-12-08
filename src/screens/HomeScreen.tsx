@@ -44,9 +44,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     ]);
   };
 
-  const handleAddItem = (title: string) => {
+  const handleAddItem = (title: string, icon?: string) => {
     if (!activeChecklistId) return;
-    addItem(activeChecklistId, title);
+    addItem(activeChecklistId, title, icon);
   };
 
   const handleReorder = (data: ChecklistItem[]) => {
@@ -62,6 +62,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
         <ChecklistItemCard
           id={item.id}
           title={item.title}
+          icon={item.icon}
           checked={item.checked}
           onToggle={() => toggleItemCheck(activeChecklistId, item.id)}
           onDelete={() => deleteItem(activeChecklistId, item.id)}
@@ -88,7 +89,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
       <SafeAreaView className="flex-1 bg-background">
         <Header
           title={t('app.name')}
-          rightButton={{icon: '⚙️', onPress: () => navigation.navigate('Settings')}}
+          rightButton={{icon: 'cog', onPress: () => navigation.navigate('Settings')}}
         />
         <View className="flex-1 items-center justify-center p-4">
           <Text className="text-textPrimary text-lg text-center">{t('home.noChecklist')}</Text>
@@ -104,7 +105,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
         <Header
           title={activeChecklist.name}
           rightButton={{
-            icon: '↻',
+            icon: 'refresh',
             onPress: handleReset,
           }}
         />
@@ -148,7 +149,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
         {/* 底部設置按鈕 */}
         <View className="p-4 bg-white border-t border-gray-200">
           <Button
-            title={`⚙️  ${t('common.settings')}`}
+            title={t('common.settings')}
             variant="outline"
             onPress={() => navigation.navigate('Settings')}
           />
