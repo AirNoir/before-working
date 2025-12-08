@@ -5,6 +5,7 @@
 
 import {UserPermission} from '@types/index';
 import {PERMISSION_LIMITS} from '@constants/config';
+import i18n from '@locales/index';
 
 /**
  * 檢查用戶是否可以創建新清單
@@ -42,11 +43,12 @@ export const isPremiumUser = (userPermission: UserPermission): boolean => {
  * 獲取權限描述文字
  */
 export const getPermissionDescription = (userPermission: UserPermission): string => {
+  const t = i18n.t;
   switch (userPermission) {
     case UserPermission.FREE:
-      return `免費版 - 限制 ${PERMISSION_LIMITS.FREE_CHECKLIST_COUNT} 個清單`;
+      return t('settings.account.free');
     case UserPermission.PREMIUM:
-      return '付費版 - 無限清單 + 雲端同步';
+      return t('settings.account.premium');
     default:
       return '未知權限';
   }

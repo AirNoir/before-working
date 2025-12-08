@@ -4,11 +4,9 @@
 
 import React, {useEffect} from 'react';
 import {View, Text, Alert, SafeAreaView, ScrollView} from 'react-native';
-import DraggableFlatList, {
-  RenderItemParams,
-  ScaleDecorator,
-} from 'react-native-draggable-flatlist';
+import DraggableFlatList, {RenderItemParams, ScaleDecorator} from 'react-native-draggable-flatlist';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import {useTranslation} from 'react-i18next';
 import {useAppStore} from '@store/useAppStore';
 import {Header, ChecklistItemCard, AddItemInput, Button} from '@components/index';
 import type {ChecklistItem} from '@types/index';
@@ -18,6 +16,7 @@ interface HomeScreenProps {
 }
 
 export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
+  const {t} = useTranslation();
   const {
     checklists,
     activeChecklistId,
@@ -35,10 +34,10 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
   const handleReset = () => {
     if (!activeChecklistId) return;
 
-    Alert.alert('確認重置', '確定要重置所有項目為未勾選狀態嗎？', [
-      {text: '取消', style: 'cancel'},
+    Alert.alert(t('home.resetConfirm'), t('home.resetMessage'), [
+      {text: t('common.cancel'), style: 'cancel'},
       {
-        text: '重置',
+        text: t('common.reset'),
         style: 'destructive',
         onPress: () => resetAllItems(activeChecklistId),
       },
@@ -78,8 +77,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
   const progress = activeChecklist
     ? activeChecklist.items.length > 0
       ? Math.round(
-          (activeChecklist.items.filter(i => i.checked).length /
-            activeChecklist.items.length) *
+          (activeChecklist.items.filter(i => i.checked).length / activeChecklist.items.length) *
             100,
         )
       : 0
@@ -89,13 +87,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     return (
       <SafeAreaView className="flex-1 bg-background">
         <Header
-          title="出門點點名"
+          title={t('app.name')}
           rightButton={{icon: '⚙️', onPress: () => navigation.navigate('Settings')}}
         />
         <View className="flex-1 items-center justify-center p-4">
-          <Text className="text-textPrimary text-lg text-center">
-            沒有可用的清單，請先創建一個清單
-          </Text>
+          <Text className="text-textPrimary text-lg text-center">{t('home.noChecklist')}</Text>
         </View>
       </SafeAreaView>
     );
@@ -116,27 +112,26 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
         {/* 進度條 */}
         <View className="bg-white px-4 py-3 mb-2">
           <View className="flex-row justify-between items-center mb-2">
-            <Text className="text-textPrimary font-semibold">完成進度</Text>
+            <Text className="text-textPrimary font-semibold">{t('home.progress')}</Text>
             <Text className="text-primary font-bold text-lg">{progress}%</Text>
           </View>
           <View className="h-2 bg-gray-200 rounded-full overflow-hidden">
-            <View
-              className="h-full bg-success rounded-full"
-              style={{width: `${progress}%`}}
-            />
+            <View className="h-full bg-success rounded-full" style={{width: `${progress}%`}} />
           </View>
         </View>
 
         {/* 清單內容 */}
         <View className="flex-1 px-4">
           {/* 添加項目輸入框 */}
-          <AddItemInput onAdd={handleAddItem} placeholder="添加新項目..." />
+          <AddItemInput onAdd={handleAddItem} placeholder={t('home.addItemPlaceholder')} />
 
           {/* 拖拽清單 */}
           {activeChecklist.items.length === 0 ? (
             <View className="flex-1 items-center justify-center">
               <Text className="text-gray-400 text-base text-center">
-                目前沒有任何項目{'\n'}點擊上方輸入框添加項目
+                {t('home.emptyList')}
+                {'\n'}
+                {t('home.emptyListHint')}
               </Text>
             </View>
           ) : (
@@ -153,7 +148,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
         {/* 底部設置按鈕 */}
         <View className="p-4 bg-white border-t border-gray-200">
           <Button
-            title="⚙️  設置"
+            title={`⚙️  ${t('common.settings')}`}
             variant="outline"
             onPress={() => navigation.navigate('Settings')}
           />
@@ -162,4 +157,3 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     </GestureHandlerRootView>
   );
 };
-

@@ -37,6 +37,9 @@
       ],
       "@constants/*": [
         "src/constants/*"
+      ],
+      "@locales/*": [
+        "src/locales/*"
       ]
     }
   },

@@ -39,12 +39,18 @@ export enum UserPermission {
 }
 
 /**
+ * 支持的语言类型
+ */
+export type SupportedLanguage = 'zh-TW' | 'zh-CN' | 'en';
+
+/**
  * 应用设置类型
  */
 export interface AppSettings {
   notification: NotificationSettings;
   userPermission: UserPermission;
   theme: 'light' | 'dark'; // 预留深色模式
+  language: SupportedLanguage; // 语言设置
 }
 
 /**

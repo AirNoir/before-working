@@ -4,14 +4,8 @@
  */
 
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  TextInput,
-  Alert,
-  StyleSheet,
-} from 'react-native';
+import {View, Text, TouchableOpacity, TextInput, Alert, StyleSheet} from 'react-native';
+import {useTranslation} from 'react-i18next';
 import {COLORS} from '@constants/colors';
 
 interface ChecklistItemCardProps {
@@ -34,12 +28,13 @@ export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
   drag,
   isActive = false,
 }) => {
+  const {t} = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
   const [editText, setEditText] = useState(title);
 
   const handleSave = () => {
     if (editText.trim() === '') {
-      Alert.alert('錯誤', '項目名稱不能為空');
+      Alert.alert('錯誤', t('item.emptyTitle'));
       setEditText(title);
       return;
     }
@@ -48,9 +43,9 @@ export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
   };
 
   const handleDelete = () => {
-    Alert.alert('確認刪除', `確定要刪除「${title}」嗎？`, [
-      {text: '取消', style: 'cancel'},
-      {text: '刪除', style: 'destructive', onPress: onDelete},
+    Alert.alert(t('item.deleteConfirm'), t('item.deleteMessage', {title}), [
+      {text: t('common.cancel'), style: 'cancel'},
+      {text: t('common.delete'), style: 'destructive', onPress: onDelete},
     ]);
   };
 
@@ -116,4 +111,3 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
 });
-

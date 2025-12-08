@@ -13,6 +13,7 @@ import {
   Platform,
   Alert,
 } from 'react-native';
+import {useTranslation} from 'react-i18next';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {useAppStore} from '@store/useAppStore';
 import {Header, Button} from '@components/index';
@@ -24,13 +25,16 @@ import {
 } from '@utils/notification';
 import {parseTimeString, formatTime} from '@utils/helpers';
 import {getPermissionDescription, isPremiumUser} from '@utils/permission';
+import {supportedLanguages} from '@locales/index';
+import type {SupportedLanguage} from '@types/index';
 
 interface SettingsScreenProps {
   navigation: any;
 }
 
 export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
-  const {settings, updateNotificationSettings} = useAppStore();
+  const {t, i18n} = useTranslation();
+  const {settings, updateNotificationSettings, updateLanguage} = useAppStore();
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [tempTime, setTempTime] = useState(
     parseTimeString(settings.notification.time),
@@ -41,7 +45,10 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
       // 請求通知權限
       const granted = await requestNotificationPermission();
       if (!granted) {
-        Alert.alert('權限被拒絕', '請在系統設置中開啟通知權限');
+        Alert.alert(
+          t('settings.notification.permissionDenied'),
+          t('settings.notification.permissionDeniedMessage'),
+        );
         return;
       }
     }
@@ -67,25 +74,39 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
   };
 
   const handleTestNotification = async () => {
-    await sendTestNotification('測試通知', '這是一個測試通知，確認通知功能正常運作');
-    Alert.alert('已發送', '已發送測試通知');
+    await sendTestNotification(
+      t('settings.notification.testNotification'),
+      t('settings.notification.testNotificationMessage'),
+    );
+    Alert.alert(
+      t('settings.notification.testNotificationSent'),
+      t('settings.notification.testNotificationMessage'),
+    );
+  };
+
+  const handleLanguageChange = (language: SupportedLanguage) => {
+    updateLanguage(language);
   };
 
   return (
     <SafeAreaView className="flex-1 bg-background">
       <Header
-        title="設置"
+        title={t('settings.title')}
         leftButton={{icon: '←', onPress: () => navigation.goBack()}}
       />
 
       <ScrollView className="flex-1">
         {/* 通知設置區塊 */}
         <View className="bg-white mt-4 mx-4 rounded-lg p-4">
-          <Text className="text-textPrimary font-bold text-lg mb-3">通知設置</Text>
+          <Text className="text-textPrimary font-bold text-lg mb-3">
+            {t('settings.notification.title')}
+          </Text>
 
           {/* 開啟通知 */}
           <View className="flex-row justify-between items-center mb-4">
-            <Text className="text-textPrimary text-base">每日提醒</Text>
+            <Text className="text-textPrimary text-base">
+              {t('settings.notification.dailyReminder')}
+            </Text>
             <Switch
               value={settings.notification.enabled}
               onValueChange={handleToggleNotification}
@@ -98,7 +119,9 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
           {settings.notification.enabled && (
             <>
               <View className="flex-row justify-between items-center mb-4">
-                <Text className="text-textPrimary text-base">提醒時間</Text>
+                <Text className="text-textPrimary text-base">
+                  {t('settings.notification.reminderTime')}
+                </Text>
                 <TouchableOpacity onPress={() => setShowTimePicker(true)}>
                   <Text className="text-primary text-base font-semibold">
                     {settings.notification.time}
@@ -118,7 +141,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
                   />
                   {Platform.OS === 'ios' && (
                     <Button
-                      title="確認"
+                      title={t('common.confirm')}
                       onPress={handleTimeConfirm}
                       className="mt-2"
                     />
@@ -128,7 +151,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
 
               {/* 測試通知按鈕 */}
               <Button
-                title="發送測試通知"
+                title={t('settings.notification.testNotification')}
                 variant="outline"
                 onPress={handleTestNotification}
               />
@@ -136,12 +159,56 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
           )}
         </View>
 
-        {/* 權限信息區塊 */}
+        {/* 語言設置區塊 */}
         <View className="bg-white mt-4 mx-4 rounded-lg p-4">
-          <Text className="text-textPrimary font-bold text-lg mb-3">帳號權限</Text>
+          <Text className="text-textPrimary font-bold text-lg mb-3">
+            {t('settings.language.title')}
+          </Text>
 
           <View className="bg-background rounded-lg p-3 mb-3">
-            <Text className="text-textPrimary text-sm mb-1">當前權限</Text>
+            <Text className="text-textPrimary text-sm mb-1">
+              {t('settings.language.currentLanguage')}
+            </Text>
+            <Text className="text-primary font-semibold text-base">
+              {supportedLanguages.find(lang => lang.code === settings.language)?.name ||
+                t('settings.language.zhTW')}
+            </Text>
+          </View>
+
+          <View className="mt-2">
+            {supportedLanguages.map(lang => (
+              <TouchableOpacity
+                key={lang.code}
+                onPress={() => handleLanguageChange(lang.code)}
+                className={`p-3 mb-2 rounded-lg border-2 ${
+                  settings.language === lang.code
+                    ? 'border-primary bg-primary/10'
+                    : 'border-gray-200 bg-white'
+                }`}>
+                <Text
+                  className={`text-base ${
+                    settings.language === lang.code
+                      ? 'text-primary font-semibold'
+                      : 'text-textPrimary'
+                  }`}>
+                  {lang.name}
+                  {settings.language === lang.code && ' ✓'}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* 權限信息區塊 */}
+        <View className="bg-white mt-4 mx-4 rounded-lg p-4">
+          <Text className="text-textPrimary font-bold text-lg mb-3">
+            {t('settings.account.title')}
+          </Text>
+
+          <View className="bg-background rounded-lg p-3 mb-3">
+            <Text className="text-textPrimary text-sm mb-1">
+              {t('settings.account.currentPermission')}
+            </Text>
             <Text className="text-primary font-semibold text-base">
               {getPermissionDescription(settings.userPermission)}
             </Text>
@@ -150,16 +217,22 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
           {!isPremiumUser(settings.userPermission) && (
             <>
               <Text className="text-gray-500 text-sm mb-3">
-                升級到付費版以解鎖：{'\n'}
-                • 無限數量清單{'\n'}
-                • 雲端同步與備份{'\n'}
-                • 更多功能即將推出...
+                {t('settings.account.upgradeMessage')}
+                {'\n'}
+                {t('settings.account.upgradeFeatures.unlimited')}
+                {'\n'}
+                {t('settings.account.upgradeFeatures.cloudSync')}
+                {'\n'}
+                {t('settings.account.upgradeFeatures.more')}
               </Text>
               <Button
-                title="升級到付費版"
+                title={t('settings.account.upgradeButton')}
                 variant="success"
                 onPress={() =>
-                  Alert.alert('即將推出', '付費功能即將上線，敬請期待！')
+                  Alert.alert(
+                    t('settings.account.comingSoon'),
+                    t('settings.account.comingSoonMessage'),
+                  )
                 }
               />
             </>
@@ -168,25 +241,25 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
 
         {/* 關於區塊 */}
         <View className="bg-white mt-4 mx-4 rounded-lg p-4 mb-6">
-          <Text className="text-textPrimary font-bold text-lg mb-3">關於應用</Text>
+          <Text className="text-textPrimary font-bold text-lg mb-3">
+            {t('settings.about.title')}
+          </Text>
 
           <View className="mb-2">
-            <Text className="text-gray-500 text-sm">應用名稱</Text>
+            <Text className="text-gray-500 text-sm">{t('settings.about.appName')}</Text>
             <Text className="text-textPrimary text-base font-semibold">
-              {APP_INFO.name} ({APP_INFO.englishName})
+              {t('app.name')} ({t('app.englishName')})
             </Text>
           </View>
 
           <View className="mb-2">
-            <Text className="text-gray-500 text-sm">版本</Text>
+            <Text className="text-gray-500 text-sm">{t('settings.about.version')}</Text>
             <Text className="text-textPrimary text-base">{APP_INFO.version}</Text>
           </View>
 
           <View>
-            <Text className="text-gray-500 text-sm">簡介</Text>
-            <Text className="text-textPrimary text-base">
-              {APP_INFO.description}
-            </Text>
+            <Text className="text-gray-500 text-sm">{t('settings.about.description')}</Text>
+            <Text className="text-textPrimary text-base">{t('app.description')}</Text>
           </View>
         </View>
       </ScrollView>

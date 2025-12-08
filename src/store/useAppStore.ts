@@ -10,6 +10,7 @@ import type {
   ChecklistItem,
   AppSettings,
   UserPermission,
+  SupportedLanguage,
 } from '@types/index';
 import {
   STORAGE_KEYS,
@@ -19,6 +20,7 @@ import {
 import {saveData, getData} from '@utils/storage';
 import {generateId} from '@utils/helpers';
 import {scheduleDailyNotification} from '@utils/notification';
+import i18n from '@locales/index';
 
 interface AppStore extends AppState {
   // 初始化
@@ -41,6 +43,7 @@ interface AppStore extends AppState {
   // 設置操作
   updateNotificationSettings: (enabled: boolean, time?: string) => void;
   updateUserPermission: (permission: UserPermission) => void;
+  updateLanguage: (language: SupportedLanguage) => void;
   
   // 持久化
   saveToStorage: () => Promise<void>;
@@ -96,6 +99,7 @@ const createDefaultSettings = (): AppSettings => ({
   notification: {...DEFAULT_NOTIFICATION},
   userPermission: 'free', // 默認為免費版，但目前全開啟
   theme: 'light',
+  language: 'zh-TW', // 默認繁體中文
 });
 
 /**
@@ -125,6 +129,11 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
       const settings = storedSettings || createDefaultSettings();
       const activeId = storedActiveId || checklists[0]?.id || null;
+
+      // 設置語言
+      if (settings.language) {
+        await i18n.changeLanguage(settings.language);
+      }
 
       set({
         checklists,
@@ -351,6 +360,21 @@ export const useAppStore = create<AppStore>((set, get) => ({
       settings: {
         ...state.settings,
         userPermission: permission,
+      },
+    }));
+
+    get().saveToStorage();
+  },
+
+  // 更新語言設置
+  updateLanguage: async language => {
+    // 更新 i18n 語言
+    await i18n.changeLanguage(language);
+
+    set(state => ({
+      settings: {
+        ...state.settings,
+        language,
       },
     }));
 

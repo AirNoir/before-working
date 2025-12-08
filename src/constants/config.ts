@@ -18,7 +18,7 @@ export const DEFAULT_NOTIFICATION = {
 } as const;
 
 // 默認清單名稱
-export const DEFAULT_CHECKLIST_NAME = '上班前清單';
+export const DEFAULT_CHECKLIST_NAME = '出門點點名';
 
 // 通知頻道配置 (Android)
 export const NOTIFICATION_CHANNEL = {
@@ -29,8 +29,8 @@ export const NOTIFICATION_CHANNEL = {
 
 // 權限限制
 export const PERMISSION_LIMITS = {
-  FREE_CHECKLIST_COUNT: 1,      // 免費版清單數量限制
-  PREMIUM_CHECKLIST_COUNT: -1,  // 付費版無限制（-1 表示無限）
+  FREE_CHECKLIST_COUNT: 1, // 免費版清單數量限制
+  PREMIUM_CHECKLIST_COUNT: -1, // 付費版無限制（-1 表示無限）
 } as const;
 
 // App 信息
@@ -40,4 +40,3 @@ export const APP_INFO = {
   version: '1.0.0',
   description: '專為解決「出門前遺忘重要物品」的焦慮而設計',
 } as const;
-

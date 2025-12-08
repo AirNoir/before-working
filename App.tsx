@@ -14,6 +14,9 @@ import {COLORS} from './src/constants/colors';
 // NativeWind 配置
 import './global.css';
 
+// i18n 配置
+import './src/locales';
+
 const Stack = createNativeStackNavigator();
 
 const App: React.FC = () => {
