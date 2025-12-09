@@ -1,7 +1,10 @@
 module.exports = function (api) {
   api.cache(true);
   return {
-    presets: ['babel-preset-expo'],
+    presets: [
+      'babel-preset-expo',
+      'nativewind/babel',
+    ],
     plugins: [
       [
         'module-resolver',
@@ -20,7 +23,6 @@ module.exports = function (api) {
           extensions: ['.js', '.jsx', '.ts', '.tsx'],
         },
       ],
-      'nativewind/babel',
       // react-native-reanimated/plugin 必須在最後
       'react-native-reanimated/plugin',
     ],
