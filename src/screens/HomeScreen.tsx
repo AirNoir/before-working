@@ -8,8 +8,8 @@ import DraggableFlatList, {RenderItemParams, ScaleDecorator} from 'react-native-
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useTranslation} from 'react-i18next';
 import {useAppStore} from '@store/useAppStore';
-import {Header, ChecklistItemCard, AddItemInput, Button} from '@components/index';
-import type {ChecklistItem} from '@types/index';
+import {Header, ChecklistItemCard, AddItemInput, Button, PersonalToolBar} from '@components/index';
+import type {ChecklistItem} from '@/types';
 
 interface HomeScreenProps {
   navigation: any;
@@ -91,6 +91,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
           title={t('app.name')}
           rightButton={{icon: 'cog', onPress: () => navigation.navigate('Settings')}}
         />
+        <PersonalToolBar />
         <View className="flex-1 items-center justify-center p-4">
           <Text className="text-textPrimary text-lg text-center">{t('home.noChecklist')}</Text>
         </View>
@@ -109,6 +110,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
             onPress: handleReset,
           }}
         />
+
+        {/* Personal ToolBar */}
+        <PersonalToolBar />
 
         {/* 進度條 */}
         <View className="bg-white px-4 py-3 mb-2">

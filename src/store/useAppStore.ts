@@ -44,6 +44,7 @@ interface AppStore extends AppState {
   updateNotificationSettings: (enabled: boolean, time?: string) => void;
   updateUserPermission: (permission: UserPermission) => void;
   updateLanguage: (language: SupportedLanguage) => void;
+  updateClockFormat: (format: '12h' | '24h') => void;
   
   // 持久化
   saveToStorage: () => Promise<void>;
@@ -104,6 +105,7 @@ const createDefaultSettings = (): AppSettings => ({
   userPermission: 'free', // 默認為免費版，但目前全開啟
   theme: 'light',
   language: 'zh-TW', // 默認繁體中文
+  clockFormat: '24h', // 默認24小時制
 });
 
 /**
@@ -380,6 +382,18 @@ export const useAppStore = create<AppStore>((set, get) => ({
       settings: {
         ...state.settings,
         language,
+      },
+    }));
+
+    get().saveToStorage();
+  },
+
+  // 更新時鐘格式設置
+  updateClockFormat: format => {
+    set(state => ({
+      settings: {
+        ...state.settings,
+        clockFormat: format,
       },
     }));
 

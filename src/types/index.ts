@@ -52,6 +52,7 @@ export interface AppSettings {
   userPermission: UserPermission;
   theme: 'light' | 'dark'; // 预留深色模式
   language: SupportedLanguage; // 语言设置
+  clockFormat: '12h' | '24h'; // 时钟格式：12小时制或24小时制
 }
 
 /**
