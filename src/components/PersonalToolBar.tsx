@@ -31,14 +31,14 @@ export const PersonalToolBar: React.FC = () => {
       {/* 右側：時鐘格式切換按鈕 */}
       <TouchableOpacity
         onPress={toggleClockFormat}
-        className="flex-row items-center px-3 py-1.5 rounded-md bg-background"
+        className="flex-row items-center px-3 py-1.5 rounded-md bg-orange-300"
         activeOpacity={0.7}>
         <MaterialCommunityIcons
           name="clock-outline"
           size={20}
-          color={COLORS.textPrimary}
+          color={COLORS.blue[500]}
         />
-        <Text className="text-textPrimary ml-1 text-xs font-semibold">
+        <Text className="text-blue-500 ml-1 text-xs font-semibold">
           {clockFormat === '24h' ? '24H' : '12H'}
         </Text>
       </TouchableOpacity>

@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     width: '100%',
     position: 'absolute',
     top: '50%',
-    backgroundColor: '#333333',
+    backgroundColor: '#111',
     zIndex: 10,
   },
   separator: {

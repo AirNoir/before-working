@@ -16,7 +16,7 @@ interface AddItemInputProps {
 
 export const AddItemInput: React.FC<AddItemInputProps> = ({
   onAdd,
-  placeholder = '添加新項目...',
+  placeholder = '新增檢查清單...',
 }) => {
   const {t} = useTranslation();
   const [text, setText] = useState('');

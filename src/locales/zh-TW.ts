@@ -30,7 +30,7 @@ export default {
     title: '出門點點名',
     emptyList: '目前沒有任何項目',
     emptyListHint: '點擊上方輸入框添加項目',
-    addItemPlaceholder: '添加新項目...',
+    addItemPlaceholder: '新增檢查清單...',
     progress: '完成進度',
     resetConfirm: '確認重置',
     resetMessage: '確定要重置所有項目為未勾選狀態嗎？',
