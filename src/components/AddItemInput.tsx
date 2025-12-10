@@ -44,7 +44,7 @@ export const AddItemInput: React.FC<AddItemInputProps> = ({
             backgroundColor: selectedIcon ? COLORS.primary + '20' : COLORS.background,
           }}>
           <MaterialCommunityIcons
-            name={selectedIcon ? (selectedIcon as any) : 'image-outline'}
+            name={selectedIcon ? (selectedIcon as any) : 'wallet-outline'}
             size={24}
             color={selectedIcon ? COLORS.primary : COLORS.gray[400]}
           />

@@ -40,6 +40,9 @@
       ],
       "@locales/*": [
         "src/locales/*"
+      ],
+      "@hooks/*": [
+        "src/hooks/*"
       ]
     }
   },

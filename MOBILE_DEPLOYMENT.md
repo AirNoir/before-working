@@ -25,15 +25,15 @@
    - Android: 使用 Expo Go App 內建的掃描功能
 
 **限制：**
-- ❌ 不支持原生模塊（如 `react-native-worklets-core`）
-- ❌ 不支持自定義原生代碼
+- ❌ 不支援原生模組（如 `react-native-worklets-core`）
+- ❌ 不支援自訂原生程式碼
 - ✅ 適合快速測試純 JavaScript 功能
 
 ---
 
-### 方式二：Development Build（推薦用於你的項目）
+### 方式二：Development Build（推薦用於你的專案）
 
-**適用場景：** 包含原生模塊的項目（如你的項目使用了 `react-native-worklets-core`）
+**適用場景：** 包含原生模組的專案（如你的專案使用了 `react-native-worklets-core`）
 
 **步驟：**
 
@@ -47,14 +47,14 @@ npm install -g eas-cli
 eas login
 ```
 
-#### 3. 配置 EAS（首次使用）
+#### 3. 設定 EAS（首次使用）
 ```bash
 eas build:configure
 ```
 
-這會創建 `eas.json` 配置文件
+這會建立 `eas.json` 設定檔
 
-#### 4. 創建開發版本（Development Build）
+#### 4. 建立開發版本（Development Build）
 ```bash
 # iOS (需要 macOS)
 eas build --profile development --platform ios
@@ -62,25 +62,25 @@ eas build --profile development --platform ios
 # Android
 eas build --profile development --platform android
 
-# 或同時構建兩個平台
+# 或同時建置兩個平台
 eas build --profile development --platform all
 ```
 
 #### 5. 下載並安裝到手機
-- EAS 會生成下載連結
-- iOS: 使用 TestFlight 或直接下載 `.ipa` 文件
-- Android: 直接下載 `.apk` 文件並安裝
+- EAS 會產生下載連結
+- iOS: 使用 TestFlight 或直接下載 `.ipa` 檔案
+- Android: 直接下載 `.apk` 檔案並安裝
 
-#### 6. 啟動開發服務器
+#### 6. 啟動開發伺服器
 ```bash
 npm start
 # 或
 expo start --dev-client
 ```
 
-#### 7. 連接手機
-- 開發版本會自動連接同一 Wi-Fi 的開發服務器
-- 或手動輸入電腦 IP 地址
+#### 7. 連線手機
+- 開發版本會自動連線同一 Wi-Fi 的開發伺服器
+- 或手動輸入電腦 IP 位址
 
 ---
 
@@ -89,54 +89,54 @@ expo start --dev-client
 #### Android（需要 Android Studio）
 
 ```bash
-# 預構建原生項目
+# 預建置原生專案
 npx expo prebuild
 
-# 構建 APK
+# 建置 APK
 cd android
 ./gradlew assembleDebug
 
-# 安裝到連接的手機
+# 安裝到已連線的手機
 ./gradlew installDebug
 ```
 
 #### iOS（需要 macOS + Xcode）
 
 ```bash
-# 預構建原生項目
+# 預建置原生專案
 npx expo prebuild
 
-# 打開 Xcode 項目
+# 開啟 Xcode 專案
 open ios/*.xcworkspace
 
-# 在 Xcode 中選擇設備並運行
+# 在 Xcode 中選擇裝置並執行
 ```
 
 ---
 
-## 🔧 配置文件規範
+## 🔧 設定檔規範
 
-### app.json 重要配置
+### app.json 重要設定
 
 ```json
 {
   "expo": {
-    "name": "應用名稱",
-    "slug": "應用標識符",
+    "name": "應用程式名稱",
+    "slug": "應用程式識別碼",
     "version": "1.0.0",
     "ios": {
-      "bundleIdentifier": "com.yourcompany.app",  // iOS 唯一識別符
-      "buildNumber": "1"                          // 構建號碼
+      "bundleIdentifier": "com.yourcompany.app",  // iOS 唯一識別碼
+      "buildNumber": "1"                          // 建置編號
     },
     "android": {
-      "package": "com.yourcompany.app",           // Android 包名
+      "package": "com.yourcompany.app",           // Android 套件名稱
       "versionCode": 1                            // 版本代碼
     }
   }
 }
 ```
 
-### eas.json 配置範例
+### eas.json 設定範例
 
 ```json
 {
@@ -176,16 +176,16 @@ open ios/*.xcworkspace
 
 ### 2. Bundle Identifier 規範
 
-- **iOS**: `com.[公司名].[應用名]` (如 `com.checkmeout.app`)
-- **Android**: `com.[公司名].[應用名]` (與 iOS 保持一致為佳)
+- **iOS**: `com.[公司名稱].[應用程式名稱]` (如 `com.checkmeout.app`)
+- **Android**: `com.[公司名稱].[應用程式名稱]` (與 iOS 保持一致為佳)
 - **規則**: 
   - 只能包含英文字母、數字、連字號和點
-  - 必須是唯一的（全 App Store/Play Store 唯一）
+  - 必須是唯一的（整個 App Store/Play Store 唯一）
   - 一經發布不能更改
 
-### 3. 權限聲明
+### 3. 權限宣告
 
-在 `app.json` 中正確聲明所需權限：
+在 `app.json` 中正確宣告所需權限：
 
 ```json
 {
@@ -207,7 +207,7 @@ open ios/*.xcworkspace
 
 ### 4. 環境變數管理
 
-使用 `expo-constants` 或 `@expo/config-plugins` 管理不同環境：
+使用 `expo-constants` 或 `@expo/config-plugins` 管理不同環境變數：
 
 ```typescript
 import Constants from 'expo-constants';
@@ -232,9 +232,9 @@ const getEnvVars = () => {
 
 ### 5. 測試檢查清單
 
-在真實設備測試前，確保：
+在真實裝置測試前，確保：
 
-- [ ] 所有原生模塊正常運作
+- [ ] 所有原生模組正常運作
 - [ ] 權限請求流程正確
 - [ ] 通知功能正常
 - [ ] 深色模式適配（如有）
@@ -244,12 +244,12 @@ const getEnvVars = () => {
 
 ---
 
-## 🚀 生產環境部署
+## 🚀 正式環境部署
 
 ### 使用 EAS Build + Submit
 
 ```bash
-# 1. 構建生產版本
+# 1. 建置正式版本
 eas build --profile production --platform ios
 eas build --profile production --platform android
 
@@ -258,7 +258,7 @@ eas submit --platform ios
 eas submit --platform android
 ```
 
-### 本地構建生產版本
+### 本機建置正式版本
 
 #### Android
 ```bash
@@ -281,19 +281,19 @@ npx expo prebuild
 
 ### 1. "Unable to resolve module"
 - 清除快取：`expo start -c`
-- 重新安裝依賴：`rm -rf node_modules && npm install`
+- 重新安裝相依套件：`rm -rf node_modules && npm install`
 
-### 2. 原生模塊在 Expo Go 無法使用
+### 2. 原生模組在 Expo Go 無法使用
 - 使用 Development Build（方式二）
-- 或使用本地構建（方式三）
+- 或使用本機建置（方式三）
 
-### 3. 構建失敗
-- 檢查 `eas.json` 配置
-- 查看 EAS 構建日誌
-- 確認原生模塊兼容性
+### 3. 建置失敗
+- 檢查 `eas.json` 設定
+- 查看 EAS 建置日誌
+- 確認原生模組相容性
 
-### 4. 手機無法連接開發服務器
-- 確認同一 Wi-Fi
+### 4. 手機無法連線開發伺服器
+- 確認同一 Wi-Fi 網路
 - 檢查防火牆設定
 - 使用 `expo start --tunnel` (需要 Expo 帳號)
 
@@ -301,8 +301,8 @@ npx expo prebuild
 
 ## 📚 參考資源
 
-- [Expo 官方文檔](https://docs.expo.dev/)
-- [EAS Build 文檔](https://docs.expo.dev/build/introduction/)
+- [Expo 官方文件](https://docs.expo.dev/)
+- [EAS Build 文件](https://docs.expo.dev/build/introduction/)
 - [Development Build 指南](https://docs.expo.dev/development/introduction/)
-- [React Native 最佳實踐](https://reactnative.dev/docs/performance)
+- [React Native 最佳實務](https://reactnative.dev/docs/performance)
 

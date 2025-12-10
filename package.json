@@ -4,25 +4,26 @@
   "description": "出门点点名 - 上班前仪式清单 App",
   "main": "index.js",
   "scripts": {
-    "start": "expo start",
-    "start:tunnel": "expo start --tunnel",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
+    "start": "node scripts/load-env.js && expo start",
+    "start:tunnel": "node scripts/load-env.js && expo start --tunnel",
+    "android": "node scripts/load-env.js && expo start --android",
+    "ios": "node scripts/load-env.js && expo start --ios",
+    "web": "node scripts/load-env.js && expo start --web",
     "test": "jest",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "postinstall": "node -e \"try { require('fs').symlinkSync('react-native-worklets-core', 'node_modules/react-native-worklets', 'dir'); } catch (e) { if (e.code !== 'EEXIST') throw e; }\""
   },
   "dependencies": {
-    "@expo/vector-icons": "^15.0.3",
+    "@expo/vector-icons": "^14.0.3",
     "@react-native-async-storage/async-storage": "1.23.1",
-    "@react-native-community/datetimepicker": "7.6.1",
+    "@react-native-community/datetimepicker": "8.0.1",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
     "expo": "~51.0.0",
     "expo-constants": "~16.0.0",
     "expo-font": "~12.0.10",
-    "expo-localization": "^17.0.8",
+    "expo-localization": "~15.0.3",
+    "expo-location": "~17.0.1",
     "expo-notifications": "~0.28.1",
     "expo-status-bar": "~1.12.1",
     "i18next": "^25.7.2",
@@ -51,7 +52,7 @@
     "prettier": "^3.1.1",
     "react-test-renderer": "18.2.0",
     "tailwindcss": "3.3.2",
-    "typescript": "^5.3.3"
+    "typescript": "~5.3.3"
   },
   "engines": {
     "node": ">=18"

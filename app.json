@@ -18,7 +18,9 @@
       "infoPlist": {
         "UIBackgroundModes": [
           "remote-notification"
-        ]
+        ],
+        "NSLocationWhenInUseUsageDescription": "需要位置權限以獲取您所在地區的天氣資訊",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "需要位置權限以獲取您所在地區的天氣資訊"
       }
     },
     "android": {
@@ -28,7 +30,9 @@
       "package": "com.checkmeout.app",
       "permissions": [
         "RECEIVE_BOOT_COMPLETED",
-        "VIBRATE"
+        "VIBRATE",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_COARSE_LOCATION"
       ]
     },
     "web": {
@@ -41,7 +45,14 @@
         {
           "color": "#0ABAB5"
         }
-      ]
+      ],
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "需要位置權限以獲取您所在地區的天氣資訊"
+        }
+      ],
+      "expo-localization"
     ]
   }
 }

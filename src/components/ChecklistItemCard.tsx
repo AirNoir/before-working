@@ -63,16 +63,7 @@ export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
         <MaterialCommunityIcons name="drag" size={20} color={COLORS.gray[400]} />
       </TouchableOpacity>
 
-      {/* 圖示 */}
-      {icon && (
-        <View className="mr-3">
-          <MaterialCommunityIcons
-            name={icon as any}
-            size={24}
-            color={checked ? COLORS.gray[400] : COLORS.primary}
-          />
-        </View>
-      )}
+     
 
       {/* 勾選框 */}
       <TouchableOpacity onPress={onToggle} className="mr-3">
@@ -84,11 +75,22 @@ export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
         </View>
       </TouchableOpacity>
 
+       {/* 圖示 */}
+       {icon && (
+        <View className="mr-3">
+          <MaterialCommunityIcons
+            name={icon as any}
+            size={24}
+            color={checked ? COLORS.gray[400] : COLORS.primary}
+          />
+        </View>
+      )}
+
       {/* 內容區域 */}
       <View className="flex-1">
         {isEditing ? (
           <TextInput
-            className="text-base text-textPrimary border-b border-primary pb-1"
+            className="text-xl text-textPrimary border-b border-primary pb-1"
             value={editText}
             onChangeText={setEditText}
             onBlur={handleSave}
@@ -99,7 +101,7 @@ export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
         ) : (
           <TouchableOpacity onPress={() => setIsEditing(true)}>
             <Text
-              className={`text-base ${
+              className={`text-lg ${
                 checked ? 'text-gray-400 line-through' : 'text-textPrimary'
               }`}>
               {title}

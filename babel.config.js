@@ -19,6 +19,7 @@ module.exports = function (api) {
             '@types': './src/types',
             '@constants': './src/constants',
             '@locales': './src/locales',
+            '@hooks': './src/hooks',
           },
           extensions: ['.js', '.jsx', '.ts', '.tsx'],
         },
