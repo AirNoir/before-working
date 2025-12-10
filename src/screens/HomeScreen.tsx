@@ -2,14 +2,29 @@
  * 主頁面 - 清單管理
  */
 
-import React, {useEffect} from 'react';
-import {View, Text, Alert, SafeAreaView, ScrollView} from 'react-native';
-import DraggableFlatList, {RenderItemParams, ScaleDecorator} from 'react-native-draggable-flatlist';
+import React, {useEffect, useState} from 'react';
+import {View, Text, Alert, SafeAreaView, ScrollView, FlatList} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useTranslation} from 'react-i18next';
 import {useAppStore} from '@store/useAppStore';
 import {Header, ChecklistItemCard, AddItemInput, Button, PersonalToolBar} from '@components/index';
 import type {ChecklistItem} from '@/types';
+
+// 动态导入 DraggableFlatList，如果失败则使用普通 FlatList
+let DraggableFlatList: any = null;
+let ScaleDecorator: any = null;
+let isDraggableAvailable = false;
+
+try {
+  const draggableModule = require('react-native-draggable-flatlist');
+  DraggableFlatList = draggableModule.default;
+  ScaleDecorator = draggableModule.ScaleDecorator;
+  isDraggableAvailable = true;
+} catch (error) {
+  // 如果无法加载，使用普通 FlatList
+  console.warn('DraggableFlatList not available, using regular FlatList');
+  isDraggableAvailable = false;
+}
 
 interface HomeScreenProps {
   navigation: any;
@@ -54,24 +69,31 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     reorderItems(activeChecklistId, data);
   };
 
-  const renderItem = ({item, drag, isActive}: RenderItemParams<ChecklistItem>) => {
+  // 渲染列表项
+  const renderItem = (params: any) => {
     if (!activeChecklistId) return null;
 
-    return (
-      <ScaleDecorator>
-        <ChecklistItemCard
-          id={item.id}
-          title={item.title}
-          icon={item.icon}
-          checked={item.checked}
-          onToggle={() => toggleItemCheck(activeChecklistId, item.id)}
-          onDelete={() => deleteItem(activeChecklistId, item.id)}
-          onUpdate={newTitle => updateItem(activeChecklistId, item.id, newTitle)}
-          drag={drag}
-          isActive={isActive}
-        />
-      </ScaleDecorator>
+    const {item, drag, isActive} = params;
+    const itemContent = (
+      <ChecklistItemCard
+        id={item.id}
+        title={item.title}
+        icon={item.icon}
+        checked={item.checked}
+        onToggle={() => toggleItemCheck(activeChecklistId, item.id)}
+        onDelete={() => deleteItem(activeChecklistId, item.id)}
+        onUpdate={newTitle => updateItem(activeChecklistId, item.id, newTitle)}
+        drag={drag}
+        isActive={isActive}
+      />
     );
+
+    // 如果支持拖拽，使用 ScaleDecorator
+    if (isDraggableAvailable && ScaleDecorator) {
+      return <ScaleDecorator>{itemContent}</ScaleDecorator>;
+    }
+
+    return itemContent;
   };
 
   // 計算進度
@@ -139,12 +161,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
                 {t('home.emptyListHint')}
               </Text>
             </View>
-          ) : (
+          ) : isDraggableAvailable && DraggableFlatList ? (
             <DraggableFlatList
               data={activeChecklist.items}
               renderItem={renderItem}
-              keyExtractor={item => item.id}
-              onDragEnd={({data}) => handleReorder(data)}
+              keyExtractor={(item: ChecklistItem) => item.id}
+              onDragEnd={({data}: {data: ChecklistItem[]}) => handleReorder(data)}
+              showsVerticalScrollIndicator={false}
+            />
+          ) : (
+            <FlatList
+              data={activeChecklist.items}
+              renderItem={({item}: {item: ChecklistItem}) =>
+                renderItem({item, drag: undefined, isActive: false})
+              }
+              keyExtractor={(item: ChecklistItem) => item.id}
               showsVerticalScrollIndicator={false}
             />
           )}
