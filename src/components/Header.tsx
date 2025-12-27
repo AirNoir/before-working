@@ -22,9 +22,12 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({title, leftButton, rightButton}) => {
   const {weather, loading, icon} = useWeather();
+  console.log('weather', weather);
 
   return (
-    <View className="bg-primary px-4 py-4 flex-row justify-between items-center" style={styles.header}>
+    <View
+      className="bg-primary px-4 py-4 flex-row justify-between items-center border-b-[2px] border-lavender"
+      style={styles.header}>
       {/* 左側區域：按鈕 + 天氣 */}
       <View className="flex-row items-center" style={styles.leftSection}>
         {/* 左側按鈕 */}
@@ -39,18 +42,14 @@ export const Header: React.FC<HeaderProps> = ({title, leftButton, rightButton}) 
         )}
 
         {/* 天氣資訊 */}
-        <View className="flex-row items-center ml-2">
+        <View className="flex-row  items-center ml-2">
           {loading ? (
             <ActivityIndicator size="small" color={COLORS.backgroundAlt} />
           ) : weather ? (
             <>
-              <MaterialCommunityIcons
-                name={icon as any}
-                size={28}
-                color={COLORS.backgroundAlt}
-              />
-              <Text className="text-white text-xl font-semibold ml-1.5">
-                {weather.temperature}°C
+              <MaterialCommunityIcons name={icon as any} size={28} color={COLORS.backgroundAlt} />
+              <Text className="text-navy text-xl font-semibold ml-1.5">
+                {weather.minTemperature}°C - {weather.maxTemperature}°C
               </Text>
             </>
           ) : null}
@@ -58,14 +57,14 @@ export const Header: React.FC<HeaderProps> = ({title, leftButton, rightButton}) 
       </View>
 
       {/* 標題（居中） */}
-      <View className="flex-1 items-center" style={styles.centerSection}>
-        <Text className="text-white text-xl font-bold" numberOfLines={1}>
-          {title}
-        </Text>
-      </View>
+      {/* <View className="flex-1 items-center" style={styles.centerSection}>
+          <Text className="text-white text-xl font-bold" numberOfLines={1}>
+            {title}
+          </Text>
+        </View> */}
 
       {/* 右側按鈕 */}
-      <View className="flex-row items-center" style={styles.rightSection}>
+      <View className="flex-row  items-center" style={styles.rightSection}>
         {rightButton && (
           <TouchableOpacity onPress={rightButton.onPress} className="p-2">
             <MaterialCommunityIcons
@@ -100,4 +99,3 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
 });
-

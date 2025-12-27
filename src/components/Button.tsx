@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import {TouchableOpacity, Text, ActivityIndicator, StyleSheet} from 'react-native';
+import {TouchableOpacity, Text, ActivityIndicator, StyleSheet, View} from 'react-native';
 import {COLORS} from '@constants/colors';
 
 type ButtonVariant = 'primary' | 'warning' | 'success' | 'outline';
@@ -16,6 +16,7 @@ interface ButtonProps {
   loading?: boolean;
   icon?: React.ReactNode;
   className?: string;
+  textClassName?: string;
 }
 
 export const Button: React.FC<ButtonProps> = ({
@@ -26,6 +27,7 @@ export const Button: React.FC<ButtonProps> = ({
   loading = false,
   icon,
   className = '',
+  textClassName,
 }) => {
   const getButtonStyle = () => {
     const baseStyle = 'px-6 py-3 rounded-lg flex-row items-center justify-center';
@@ -61,8 +63,8 @@ export const Button: React.FC<ButtonProps> = ({
         <ActivityIndicator color={variant === 'outline' ? COLORS.primary : '#FFFFFF'} />
       ) : (
         <>
-          {icon && <>{icon}</>}
-          <Text className={getTextStyle()}>{title}</Text>
+          {icon && <View className="mr-2">{icon}</View>}
+          <Text className={textClassName || getTextStyle()}>{title}</Text>
         </>
       )}
     </TouchableOpacity>

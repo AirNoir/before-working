@@ -6,8 +6,10 @@ import React, {useEffect, useState} from 'react';
 import {View, Text, Alert, SafeAreaView, ScrollView, FlatList} from 'react-native';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useTranslation} from 'react-i18next';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useAppStore} from '@store/useAppStore';
 import {Header, ChecklistItemCard, AddItemInput, Button, PersonalToolBar} from '@components/index';
+import {COLORS} from '@constants/colors';
 import type {ChecklistItem} from '@/types';
 
 // 动态导入 DraggableFlatList，如果失败则使用普通 FlatList
@@ -143,7 +145,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
             <Text className="text-primary font-bold text-lg">{progress}%</Text>
           </View>
           <View className="h-2 bg-gray-200 rounded-full overflow-hidden">
-            <View className="h-full bg-success rounded-full" style={{width: `${progress}%`}} />
+            <View className="h-full bg-lavender rounded-full" style={{width: `${progress}%`}} />
           </View>
         </View>
 
@@ -182,10 +184,13 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
         </View>
 
         {/* 底部設置按鈕 */}
-        <View className="p-4 bg-white border-t border-gray-200">
+        <View className="p-4 bg-primary border-t-[2px] border-gray-300">
           <Button
             title={t('common.settings')}
             variant="outline"
+            className="bg-transparent border-2 border-gray-400"
+            textClassName="text-gray-600 font-semibold text-base"
+            icon={<MaterialCommunityIcons name="cog" size={20} color={COLORS.gray[600]} />}
             onPress={() => navigation.navigate('Settings')}
           />
         </View>

@@ -138,3 +138,4 @@ react-native-app/
 
 **結論**：React Native 和 Web 開發是完全不同的生態系統，需要使用專門的工具鏈。Metro + Babel 是 React Native 的標準配置，就像 Vite 是現代 Web 開發的標準配置一樣。
 
+

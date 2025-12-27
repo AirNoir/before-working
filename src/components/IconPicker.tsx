@@ -3,14 +3,7 @@
  */
 
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  Modal,
-  ScrollView,
-  StyleSheet,
-} from 'react-native';
+import {View, Text, TouchableOpacity, Modal, ScrollView, StyleSheet} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {COLORS} from '@constants/colors';
 import {useTranslation} from 'react-i18next';
@@ -80,17 +73,13 @@ export const IconPicker: React.FC<IconPickerProps> = ({
   };
 
   return (
-    <Modal
-      visible={visible}
-      transparent
-      animationType="fade"
-      onRequestClose={onClose}>
+    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
             <Text style={styles.title}>{t('iconPicker.title', {defaultValue: '選擇圖示'})}</Text>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <MaterialCommunityIcons name="close" size={24} color={COLORS.textPrimary} />
+              <MaterialCommunityIcons name="close" size={24} color={COLORS.gray[100]} />
             </TouchableOpacity>
           </View>
 
@@ -100,10 +89,7 @@ export const IconPicker: React.FC<IconPickerProps> = ({
                 <TouchableOpacity
                   key={icon}
                   onPress={() => handleSelect(icon)}
-                  style={[
-                    styles.iconItem,
-                    selectedIcon === icon && styles.iconItemSelected,
-                  ]}>
+                  style={[styles.iconItem, selectedIcon === icon && styles.iconItemSelected]}>
                   <MaterialCommunityIcons
                     name={icon as any}
                     size={32}
@@ -142,7 +128,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: COLORS.textPrimary,
+    color: COLORS.gray[100],
   },
   closeButton: {
     padding: 4,
@@ -170,4 +156,3 @@ const styles = StyleSheet.create({
     borderColor: COLORS.primary,
   },
 });
-

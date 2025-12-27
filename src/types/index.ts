@@ -35,8 +35,8 @@ export interface NotificationSettings {
  * 使用者權限類型（為未來付費功能預留）
  */
 export enum UserPermission {
-  FREE = 'free',           // 免費版：單一清單
-  PREMIUM = 'premium',     // 付費版：無限清單、雲端同步
+  FREE = 'free', // 免費版：單一清單
+  PREMIUM = 'premium', // 付費版：無限清單、雲端同步
 }
 
 /**
@@ -74,10 +74,10 @@ export type WeatherCondition = 'sunny' | 'cloudy' | 'rainy' | 'partly-cloudy' | 
  * 天氣資料介面
  */
 export interface WeatherData {
-  temperature: number; // 溫度（攝氏度）
+  minTemperature?: number; // 最低溫度（攝氏度）
+  maxTemperature?: number; // 最高溫度（攝氏度）
   condition: WeatherCondition; // 天氣狀況
   conditionText: string; // 天氣狀況描述（如「晴天」、「陰天」）
   locationName?: string; // 位置名稱
   lastUpdated: number; // 最後更新時間戳記
 }
-

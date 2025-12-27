@@ -28,7 +28,7 @@ const App: React.FC = () => {
     const initApp = async () => {
       // 初始化通知系統
       await initializeNotifications();
-      
+
       // 初始化應用狀態
       await initialize();
     };
@@ -43,10 +43,7 @@ const App: React.FC = () => {
 
   return (
     <>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor={COLORS.primary}
-      />
+      <StatusBar barStyle="light-content" backgroundColor={COLORS.primary} />
       <NavigationContainer>
         <Stack.Navigator
           screenOptions={{
@@ -62,4 +59,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-

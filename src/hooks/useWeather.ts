@@ -70,7 +70,7 @@ export function useWeather(options: UseWeatherOptions = {}) {
         const {status} = await Location.requestForegroundPermissionsAsync();
         if (status !== 'granted') {
           if (!mounted) return;
-          setError('位置權限未授予');
+          setError('定位權限尚未授予，請前往設定開啟');
           setLoading(false);
           // 如果沒有權限，使用預設城市
           const defaultCity = '臺北市';
@@ -81,6 +81,7 @@ export function useWeather(options: UseWeatherOptions = {}) {
           return;
         }
 
+        console.log('status', status);
         // 取得目前位置
         const location = await Location.getCurrentPositionAsync({
           accuracy: Location.Accuracy.Balanced,
@@ -97,7 +98,7 @@ export function useWeather(options: UseWeatherOptions = {}) {
         // 取得天氣資料
         const weatherData = await fetchWeatherByLocation(cityName);
         if (!mounted) return;
-        
+
         if (weatherData) {
           setWeather(weatherData);
         } else {
@@ -105,8 +106,7 @@ export function useWeather(options: UseWeatherOptions = {}) {
         }
       } catch (err) {
         if (!mounted) return;
-        const errorMessage =
-          err instanceof Error ? err.message : '獲取天氣資料失敗';
+        const errorMessage = err instanceof Error ? err.message : '獲取天氣資料失敗';
         setError(errorMessage);
         console.error('Weather fetch error:', err);
         // 發生錯誤時嘗試使用預設城市
@@ -161,4 +161,3 @@ export function useWeather(options: UseWeatherOptions = {}) {
     icon: weather ? getWeatherIcon(weather.condition) : 'weather-cloudy',
   };
 }
-

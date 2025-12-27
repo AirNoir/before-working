@@ -63,8 +63,6 @@ export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
         <MaterialCommunityIcons name="drag" size={20} color={COLORS.gray[400]} />
       </TouchableOpacity>
 
-     
-
       {/* 勾選框 */}
       <TouchableOpacity onPress={onToggle} className="mr-3">
         <View
@@ -75,8 +73,8 @@ export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
         </View>
       </TouchableOpacity>
 
-       {/* 圖示 */}
-       {icon && (
+      {/* 圖示 */}
+      {icon && (
         <View className="mr-3">
           <MaterialCommunityIcons
             name={icon as any}
@@ -101,9 +99,7 @@ export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
         ) : (
           <TouchableOpacity onPress={() => setIsEditing(true)}>
             <Text
-              className={`text-lg ${
-                checked ? 'text-gray-400 line-through' : 'text-textPrimary'
-              }`}>
+              className={`text-lg ${checked ? 'text-gray-400 line-through' : 'text-textPrimary'}`}>
               {title}
             </Text>
           </TouchableOpacity>

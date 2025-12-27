@@ -162,7 +162,7 @@ export const FlipClock: React.FC<FlipClockProps> = ({format, className = ''}) =>
   return (
     <View className={`flex-row items-center ${className}`} style={styles.container}>
       {/* 12小時制的 AM/PM */}
-        {format === '12h' && current.period && (
+      {format === '12h' && current.period && (
         <View style={styles.periodContainer}>
           <Text style={styles.periodText}>{current.period}</Text>
         </View>
@@ -184,8 +184,6 @@ export const FlipClock: React.FC<FlipClockProps> = ({format, className = ''}) =>
       {/* 秒數 */}
       <FlipDigit digit={current.seconds[0]} prevDigit={previous.seconds[0]} />
       <FlipDigit digit={current.seconds[1]} prevDigit={previous.seconds[1]} />
-
-    
     </View>
   );
 };
@@ -203,12 +201,12 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 8,
     marginHorizontal: 2,
-    backgroundColor: '#000000', // 永遠黑色背景
+    backgroundColor: '#4A3B5C', // 永遠黑色背景
     borderWidth: 1,
     borderColor: '#333333',
     overflow: 'hidden',
     position: 'relative',
-    shadowColor: '#000',
+    shadowColor: '#4A3B5C',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.3,
     shadowRadius: 3,
@@ -229,8 +227,8 @@ const styles = StyleSheet.create({
     width: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000000',
-    color: '#FFFFFF',
+    backgroundColor: '#4A3B5C',
+    color: '#ddd',
     position: 'absolute',
   },
   flipCardFaceTop: {
@@ -249,10 +247,10 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace',
     letterSpacing: 0,
     textAlign: 'center',
-    color: '#FFFFFF', // 永遠白色文字
+    color: '#ddd', // 永遠白色文字
   },
   flipTextWhite: {
-    color: '#FFFFFF', // 確保文字是白色
+    color: '#ddd', // 確保文字是白色
   },
   divider: {
     height: 1,

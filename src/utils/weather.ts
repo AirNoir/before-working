@@ -11,7 +11,6 @@ const CWA_API_BASE = 'https://opendata.cwa.gov.tw/api/v1/rest/datastore';
 
 const CWA_API_KEY = process.env.EXPO_PUBLIC_CWA_API_KEY || ''; // 從環境變數讀取 API Key
 
-
 // 天氣現象代碼到天氣狀況的對應
 const WX_CODE_MAP: Record<number, WeatherCondition> = {
   1: 'sunny', // 晴天
@@ -44,10 +43,9 @@ const WX_CODE_MAP: Record<number, WeatherCondition> = {
  * 根據城市名稱取得天氣資料
  * @param locationName 城市名稱（如「台北市」、「新北市」）
  */
-export async function fetchWeatherByLocation(
-  locationName: string,
-): Promise<WeatherData | null> {
+export async function fetchWeatherByLocation(locationName: string): Promise<WeatherData | null> {
   // 如果沒有 API Key，直接回傳模擬資料（開發測試用）
+  console.log('CWA_API_KEY', CWA_API_KEY);
   if (!CWA_API_KEY || CWA_API_KEY === '') {
     if (__DEV__) {
       console.log('CWA API Key not set, using mock data for:', locationName);
@@ -57,11 +55,11 @@ export async function fetchWeatherByLocation(
 
   const foreCastElement = 'F-C0032-001';
   const currentElement = 'O-A0003-001';
+  const formattedLocationName = locationName.replace('台', '臺');
 
   try {
-    const url = `${CWA_API_BASE}/${currentElement}?Authorization=${CWA_API_KEY}&locationName=${locationName}`;
-    console.log('url', url);
-    console.log('locationName', locationName);
+    const url = `${CWA_API_BASE}/${foreCastElement}?Authorization=${CWA_API_KEY}&locationName=${encodeURIComponent(formattedLocationName)}`;
+
     // 添加超時控制（10秒）
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
@@ -69,7 +67,7 @@ export async function fetchWeatherByLocation(
     const response = await fetch(url, {
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
       },
       signal: controller.signal,
     });
@@ -81,39 +79,50 @@ export async function fetchWeatherByLocation(
     }
 
     const data = await response.json();
-    console.log('data', JSON.stringify(data, null, 2));
 
-    const location = data.records.location[0];
+    const location = data.records.location.find(
+      (station: any) => station.locationName === formattedLocationName,
+    );
+
+    console.log('location>>>>>>>>>', location);
 
     const weatherElements = location.weatherElement;
 
     // 取得天氣現象
     const wxElement = weatherElements.find((el: any) => el.elementName === 'Wx');
 
- 
     const wxData = wxElement.time[0].parameter;
-    const wxCode = parseInt(wxData?.parameterValue || '1', 10);
+    const wxCode = parseInt(wxData?.parameterValue || '1', 10); // 取得天氣現象值 (ex: 1:晴天, 2:多雲, 3:陰天, 4:雨天)
     const wxText = wxData?.parameterName || '未知';
 
     console.log('wxData', wxData);
     console.log('wxCode', wxCode);
     console.log('wxText', wxText);
 
-
     // 取得溫度（使用第一時段的資料）
-    const tElement = weatherElements.find((el: any) => el.elementName === 'T');
-    console.log('tElement', JSON.stringify(weatherElements, null, 2));
-    if (!tElement?.time?.[0]?.parameter) {
+    const minTElement = weatherElements.find((el: any) => el.elementName === 'MinT');
+    const maxTElement = weatherElements.find((el: any) => el.elementName === 'MaxT');
+    if (!minTElement?.time?.[0]?.parameter || !maxTElement?.time?.[0]?.parameter) {
       throw new Error('Invalid API response: missing temperature data');
     }
 
-    const tData = tElement.time[0].parameter;
-    const temperature = parseInt(tData?.parameterName || '25', 10);
+    console.log('minTElement', minTElement);
+    console.log('maxTElement', maxTElement);
+
+    const minTData = minTElement.time[0].parameter;
+    const minTValue = minTData?.parameterName;
+    console.log('minTData', minTData);
+
+    const maxTData = maxTElement.time[0].parameter;
+    const maxTValue = maxTData?.parameterName;
 
     const condition = WX_CODE_MAP[wxCode] || 'unknown';
+    console.log('minTValue', minTValue);
+    console.log('maxTValue', maxTValue);
 
     return {
-      temperature,
+      minTemperature: minTValue,
+      maxTemperature: maxTValue,
       condition,
       conditionText: wxText,
       locationName,
@@ -123,7 +132,10 @@ export async function fetchWeatherByLocation(
     // 網絡錯誤或其他錯誤時，靜默使用模擬資料
     if (__DEV__) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-      console.warn(`Weather API request failed (${errorMessage}), using mock data for:`, locationName);
+      console.warn(
+        `Weather API request failed (${errorMessage}), using mock data for:`,
+        locationName,
+      );
     }
     // 發生錯誤時回傳模擬資料
     return getMockWeatherData(locationName);
@@ -177,4 +189,3 @@ export function getWeatherIcon(condition: WeatherCondition): string {
 
   return iconMap[condition] || 'weather-cloudy';
 }
-

@@ -66,7 +66,7 @@ export const AddItemInput: React.FC<AddItemInputProps> = ({
           onPress={handleAdd}
           className="bg-primary rounded-lg px-4 py-2"
           disabled={text.trim() === ''}>
-          <Text className="text-white font-semibold">{t('common.add')}</Text>
+          <Text className="text-gray-500 font-semibold">{t('common.add')}</Text>
         </TouchableOpacity>
       </View>
 

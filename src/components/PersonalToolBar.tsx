@@ -20,7 +20,7 @@ export const PersonalToolBar: React.FC = () => {
   };
 
   return (
-    <View 
+    <View
       className="bg-white px-4 py-2 flex-row items-center justify-between border-b border-gray-200"
       style={styles.container}>
       {/* 左側：翻頁時鐘 */}
@@ -31,13 +31,9 @@ export const PersonalToolBar: React.FC = () => {
       {/* 右側：時鐘格式切換按鈕 */}
       <TouchableOpacity
         onPress={toggleClockFormat}
-        className="flex-row items-center px-3 py-1.5 rounded-md bg-orange-300"
+        className="flex-row items-center px-3 py-1.5 rounded-md bg-[#FFD8BE]"
         activeOpacity={0.7}>
-        <MaterialCommunityIcons
-          name="clock-outline"
-          size={20}
-          color={COLORS.blue[500]}
-        />
+        <MaterialCommunityIcons name="clock-outline" size={20} color={COLORS.blue[500]} />
         <Text className="text-blue-500 ml-1 text-xs font-semibold">
           {clockFormat === '24h' ? '24H' : '12H'}
         </Text>
@@ -56,4 +52,3 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
 });
-
