@@ -116,9 +116,9 @@ export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
 
 const styles = StyleSheet.create({
   card: {
-    shadowColor: '#000',
+    shadowColor: COLORS.gray[500],
     shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.15,
     shadowRadius: 2,
     elevation: 2,
   },

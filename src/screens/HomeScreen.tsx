@@ -3,7 +3,8 @@
  */
 
 import React, {useEffect, useState} from 'react';
-import {View, Text, Alert, SafeAreaView, ScrollView, FlatList} from 'react-native';
+import {View, Text, Alert, ScrollView, FlatList} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useTranslation} from 'react-i18next';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
@@ -125,7 +126,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
 
   return (
     <GestureHandlerRootView style={{flex: 1}}>
-      <SafeAreaView className="flex-1 bg-background">
+      <SafeAreaView className="flex-1 bg-background" edges={['top']}>
         {/* Header */}
         <Header
           title={activeChecklist.name}
@@ -150,7 +151,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
         </View>
 
         {/* 清單內容 */}
-        <View className="flex-1 px-4">
+        <View className="flex-1 px-4 box-shadow-md">
           {/* 添加項目輸入框 */}
           <AddItemInput onAdd={handleAddItem} placeholder={t('home.addItemPlaceholder')} />
 
