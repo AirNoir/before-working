@@ -19,10 +19,7 @@ import {useAppStore} from '@store/useAppStore';
 import {Header, Button} from '@components/index';
 import {COLORS} from '@constants/colors';
 import {APP_INFO} from '@constants/config';
-import {
-  requestNotificationPermission,
-  sendTestNotification,
-} from '@utils/notification';
+import {requestNotificationPermission, sendTestNotification} from '@utils/notification';
 import {parseTimeString, formatTime} from '@utils/helpers';
 import {getPermissionDescription, isPremiumUser} from '@utils/permission';
 import {supportedLanguages} from '@locales/index';
@@ -34,12 +31,11 @@ interface SettingsScreenProps {
 
 export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
   const {t, i18n} = useTranslation();
-  const {settings, updateNotificationSettings, updateLanguage, updateResetTime} = useAppStore();
+  const {settings, updateNotificationSettings, updateLanguage, updateResetTime, resetToDefaults} =
+    useAppStore();
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showResetTimePicker, setShowResetTimePicker] = useState(false);
-  const [tempTime, setTempTime] = useState(
-    parseTimeString(settings.notification.time),
-  );
+  const [tempTime, setTempTime] = useState(parseTimeString(settings.notification.time));
   const [tempResetTime, setTempResetTime] = useState(
     settings.resetTime ? parseTimeString(settings.resetTime) : new Date(),
   );
@@ -114,6 +110,23 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
     updateResetTime(null);
   };
 
+  const handleResetToDefaults = () => {
+    Alert.alert(t('settings.resetToDefaults.confirm'), t('settings.resetToDefaults.message'), [
+      {text: t('common.cancel'), style: 'cancel'},
+      {
+        text: t('common.confirm'),
+        style: 'destructive',
+        onPress: async () => {
+          await resetToDefaults();
+          Alert.alert(
+            t('settings.resetToDefaults.success'),
+            t('settings.resetToDefaults.successMessage'),
+          );
+        },
+      },
+    ]);
+  };
+
   return (
     <SafeAreaView className="flex-1 bg-background">
       <Header
@@ -179,6 +192,8 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
               <Button
                 title={t('settings.notification.testNotification')}
                 variant="outline"
+                textClassName="text-blue-600"
+                className="border-2 border-blue-500"
                 onPress={handleTestNotification}
               />
             </>
@@ -199,9 +214,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
 
           {/* 重置時間選擇 */}
           <View className="flex-row justify-between items-center mb-4">
-            <Text className="text-textPrimary text-base">
-              {t('settings.resetTime.resetTime')}
-            </Text>
+            <Text className="text-textPrimary text-base">{t('settings.resetTime.resetTime')}</Text>
             {settings.resetTime ? (
               <View className="flex-row items-center">
                 <TouchableOpacity onPress={() => setShowResetTimePicker(true)}>
@@ -210,16 +223,12 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleDisableResetTime}>
-                  <Text className="text-warning text-sm">
-                    {t('settings.resetTime.disable')}
-                  </Text>
+                  <Text className="text-warning text-sm">{t('settings.resetTime.disable')}</Text>
                 </TouchableOpacity>
               </View>
             ) : (
               <TouchableOpacity onPress={() => setShowResetTimePicker(true)}>
-                <Text className="text-gray-400 text-base">
-                  {t('settings.resetTime.notSet')}
-                </Text>
+                <Text className="text-gray-400 text-base">{t('settings.resetTime.notSet')}</Text>
               </TouchableOpacity>
             )}
           </View>
@@ -333,6 +342,27 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
           )}
         </View>
 
+        {/* 恢復預設值區塊 */}
+        <View className="bg-white mt-4 mx-4 rounded-lg p-4">
+          <Text className="text-textPrimary font-bold text-lg mb-3">
+            {t('settings.resetToDefaults.title')}
+          </Text>
+
+          <View className="mb-4">
+            <Text className="text-textPrimary text-base mb-2">
+              {t('settings.resetToDefaults.description')}
+            </Text>
+          </View>
+
+          <Button
+            title={t('settings.resetToDefaults.button')}
+            variant="outline"
+            onPress={handleResetToDefaults}
+            className="border-2 border-warning"
+            textClassName="text-warning font-semibold"
+          />
+        </View>
+
         {/* 關於區塊 */}
         <View className="bg-white mt-4 mx-4 rounded-lg p-4 mb-6">
           <Text className="text-textPrimary font-bold text-lg mb-3">
@@ -360,4 +390,3 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
     </SafeAreaView>
   );
 };
-

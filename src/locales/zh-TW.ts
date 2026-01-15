@@ -35,6 +35,10 @@ export default {
     resetConfirm: '確認重置',
     resetMessage: '確定要重置所有項目為未勾選狀態嗎？',
     noChecklist: '沒有可用的清單，請先創建一個清單',
+    clearAllItems: '清除全部清單',
+    clearAllItemsConfirm: '確認清除',
+    clearAllItemsMessage: '確定要刪除「{{groupName}}」分類下的所有清單項目嗎？此操作無法復原。',
+    currentGroup: '當前分類',
   },
 
   // 設置頁面
@@ -77,6 +81,16 @@ export default {
       appName: '應用名稱',
       version: '版本',
       description: '簡介',
+    },
+    resetToDefaults: {
+      title: '恢復預設值',
+      description:
+        '將應用恢復到初始狀態，包括：一個「上班」分類、預設的四個檢查項目（皮包、鑰匙、員工證、手機），以及重置時間設為 AM 06:00',
+      button: '恢復預設值',
+      confirm: '確認恢復預設值',
+      message: '確定要恢復預設值嗎？此操作將清除所有現有的分類和清單項目，無法復原。',
+      success: '已恢復預設值',
+      successMessage: '應用已恢復到預設狀態',
     },
     language: {
       title: '語言設置',

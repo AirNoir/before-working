@@ -44,6 +44,7 @@ interface AppStore extends AppState {
   toggleItemCheck: (checklistId: string, itemId: string) => void;
   resetAllItems: (checklistId: string) => void;
   resetAllChecklists: () => void; // 重置所有清單
+  resetAllItemsInGroup: (groupId: string | null) => void; // 重置指定分組下所有清單的項目
   reorderItems: (checklistId: string, newItems: ChecklistItem[]) => void;
 
   // 設置操作
@@ -52,6 +53,9 @@ interface AppStore extends AppState {
   updateUserPermission: (permission: UserPermission) => void;
   updateLanguage: (language: SupportedLanguage) => void;
   updateClockFormat: (format: '12h' | '24h') => void;
+
+  // 重置操作
+  resetToDefaults: () => Promise<void>; // 恢復預設值
 
   // 持久化
   saveToStorage: () => Promise<void>;
@@ -511,6 +515,24 @@ export const useAppStore = create<AppStore>((set, get) => ({
     get().saveToStorage();
   },
 
+  // 清除指定分組下所有清單的項目（刪除所有 items）
+  resetAllItemsInGroup: (groupId: string | null) => {
+    set(state => ({
+      checklists: state.checklists.map(c => {
+        if (c.groupId === groupId) {
+          return {
+            ...c,
+            items: [], // 刪除所有 items
+            updatedAt: Date.now(),
+          };
+        }
+        return c;
+      }),
+    }));
+
+    get().saveToStorage();
+  },
+
   // 重新排序項目
   reorderItems: (checklistId, newItems) => {
     set(state => ({
@@ -600,6 +622,47 @@ export const useAppStore = create<AppStore>((set, get) => ({
     }));
 
     get().saveToStorage();
+  },
+
+  // 恢復預設值
+  resetToDefaults: async () => {
+    const now = Date.now();
+
+    // 創建默認的 "上班" 分組
+    const defaultGroup: ChecklistGroup = {
+      id: generateId(),
+      name: '上班',
+      order: 0,
+      createdAt: now,
+    };
+
+    // 創建默認清單並分配到 "上班" 分組
+    const defaultChecklist = createDefaultChecklist();
+    defaultChecklist.groupId = defaultGroup.id;
+
+    // 創建默認設置（重置時間為 AM 06:00）
+    const defaultSettings: AppSettings = {
+      ...createDefaultSettings(),
+      resetTime: '06:00', // 設置重置時間為 AM 06:00
+    };
+
+    // 更新狀態
+    set({
+      checklists: [defaultChecklist],
+      groups: [defaultGroup],
+      activeChecklistId: defaultChecklist.id,
+      activeGroupId: defaultGroup.id,
+      settings: defaultSettings,
+    });
+
+    // 保存到存儲
+    await get().saveToStorage();
+
+    // 設置通知
+    await scheduleDailyNotification(defaultSettings.notification);
+
+    // 設置語言
+    await i18n.changeLanguage(defaultSettings.language);
   },
 
   // 保存到存儲

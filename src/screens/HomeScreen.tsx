@@ -53,6 +53,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     updateItem,
     toggleItemCheck,
     resetAllItems,
+    resetAllItemsInGroup,
     reorderItems,
     setActiveChecklist,
     setActiveGroup,
@@ -83,6 +84,22 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
         text: t('common.reset'),
         style: 'destructive',
         onPress: () => resetAllItems(activeChecklist.id),
+      },
+    ]);
+  };
+
+  const handleClearAllItemsInGroup = () => {
+    if (!activeGroupId) return;
+
+    const activeGroup = groups.find(g => g.id === activeGroupId);
+    const groupName = activeGroup?.name || t('home.currentGroup');
+
+    Alert.alert(t('home.clearAllItemsConfirm'), t('home.clearAllItemsMessage', {groupName}), [
+      {text: t('common.cancel'), style: 'cancel'},
+      {
+        text: t('common.confirm'),
+        style: 'destructive',
+        onPress: () => resetAllItemsInGroup(activeGroupId),
       },
     ]);
   };
@@ -274,6 +291,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
               keyExtractor={(item: ChecklistItem) => item.id}
               onDragEnd={({data}: {data: ChecklistItem[]}) => handleReorder(data)}
               showsVerticalScrollIndicator={false}
+              ListFooterComponent={
+                <View className="py-4">
+                  <Button
+                    title={t('home.clearAllItems')}
+                    variant="outline"
+                    onPress={handleClearAllItemsInGroup}
+                    className="border-2 border-warning"
+                    textClassName="text-warning font-semibold"
+                  />
+                </View>
+              }
             />
           ) : (
             <FlatList
@@ -283,6 +311,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
               }
               keyExtractor={(item: ChecklistItem) => item.id}
               showsVerticalScrollIndicator={false}
+              ListFooterComponent={
+                <View className="py-4">
+                  <Button
+                    title={t('home.clearAllItems')}
+                    variant="outline"
+                    onPress={handleClearAllItemsInGroup}
+                    className="border-2 border-warning"
+                    textClassName="text-warning font-semibold"
+                  />
+                </View>
+              }
             />
           )}
         </View>
