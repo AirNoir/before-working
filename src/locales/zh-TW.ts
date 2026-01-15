@@ -50,6 +50,13 @@ export default {
       permissionDenied: '權限被拒絕',
       permissionDeniedMessage: '請在系統設置中開啟通知權限',
     },
+    resetTime: {
+      title: '自動重置設置',
+      description: '設定每天自動清空所有清單的勾選狀態',
+      resetTime: '重置時間',
+      notSet: '未設置',
+      disable: '關閉',
+    },
     account: {
       title: '帳號權限',
       currentPermission: '當前權限',
@@ -105,5 +112,17 @@ export default {
   // 圖示選擇器
   iconPicker: {
     title: '選擇圖示',
+  },
+
+  // 分組相關
+  group: {
+    createGroup: '新增分類',
+    editGroup: '編輯分類',
+    deleteGroup: '刪除分類',
+    groupName: '分類名稱',
+    selectGroup: '選擇分類',
+    deleteConfirm: '確認刪除',
+    deleteMessage: '確定要刪除「{{name}}」分類嗎？刪除後該分類下的清單將移至未分組。',
+    emptyName: '分類名稱不能為空',
   },
 };

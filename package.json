@@ -1,7 +1,7 @@
 {
   "name": "check-me-out",
   "version": "1.0.0",
-  "description": "出门点点名 - 上班前仪式清单 App",
+  "description": "出門點點名 - 出門前儀式檢查清單 App",
   "main": "index.js",
   "scripts": {
     "start": "node scripts/load-env.js && expo start",

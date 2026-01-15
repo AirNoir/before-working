@@ -3,15 +3,23 @@
  */
 
 import React, {useEffect, useState} from 'react';
-import {View, Text, Alert, ScrollView, FlatList} from 'react-native';
+import {View, Text, Alert, ScrollView, FlatList, TouchableOpacity} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useTranslation} from 'react-i18next';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useAppStore} from '@store/useAppStore';
-import {Header, ChecklistItemCard, AddItemInput, Button, PersonalToolBar} from '@components/index';
+import {
+  Header,
+  ChecklistItemCard,
+  AddItemInput,
+  Button,
+  PersonalToolBar,
+  GroupTabs,
+} from '@components/index';
 import {COLORS} from '@constants/colors';
-import type {ChecklistItem} from '@/types';
+import {DEFAULT_CHECKLIST_NAME} from '@constants/config';
+import type {ChecklistItem, Checklist} from '@/types';
 
 // 动态导入 DraggableFlatList，如果失败则使用普通 FlatList
 let DraggableFlatList: any = null;
@@ -37,44 +45,100 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
   const {t} = useTranslation();
   const {
     checklists,
+    groups,
     activeChecklistId,
+    activeGroupId,
     addItem,
     deleteItem,
     updateItem,
     toggleItemCheck,
     resetAllItems,
     reorderItems,
+    setActiveChecklist,
+    setActiveGroup,
+    createGroup,
+    createChecklist,
   } = useAppStore();
 
+  // 根據選中的分組過濾清單
+  const filteredChecklists = React.useMemo(() => {
+    if (activeGroupId === null) {
+      // 如果沒有選中分組，返回空數組（不應該發生，因為默認會選中第一個分組）
+      return [];
+    }
+    // 顯示指定分組
+    return checklists.filter(c => c.groupId === activeGroupId);
+  }, [checklists, activeGroupId]);
+
   // 獲取當前活動清單
-  const activeChecklist = checklists.find(c => c.id === activeChecklistId);
+  const activeChecklist =
+    filteredChecklists.find(c => c.id === activeChecklistId) || filteredChecklists[0];
 
   const handleReset = () => {
-    if (!activeChecklistId) return;
+    if (!activeChecklist?.id) return;
 
     Alert.alert(t('home.resetConfirm'), t('home.resetMessage'), [
       {text: t('common.cancel'), style: 'cancel'},
       {
         text: t('common.reset'),
         style: 'destructive',
-        onPress: () => resetAllItems(activeChecklistId),
+        onPress: () => resetAllItems(activeChecklist.id),
       },
     ]);
   };
 
   const handleAddItem = (title: string, icon?: string) => {
-    if (!activeChecklistId) return;
-    addItem(activeChecklistId, title, icon);
+    // 如果當前分組下沒有清單，先創建一個
+    if (!activeChecklist?.id) {
+      if (activeGroupId) {
+        // 創建新清單
+        createChecklist(DEFAULT_CHECKLIST_NAME, activeGroupId);
+        // 創建後，activeChecklistId 會自動更新，但需要在下一個渲染週期才能獲取
+        // 使用 requestAnimationFrame 確保狀態已更新
+        requestAnimationFrame(() => {
+          const state = useAppStore.getState();
+          const newChecklist = state.checklists.find(
+            c => c.groupId === activeGroupId && c.id === state.activeChecklistId,
+          );
+          if (newChecklist) {
+            addItem(newChecklist.id, title, icon);
+          }
+        });
+        return;
+      }
+      return;
+    }
+    addItem(activeChecklist.id, title, icon);
+  };
+
+  const handleCreateGroup = (name: string) => {
+    createGroup(name);
+  };
+
+  const handleSelectGroup = (groupId: string | null) => {
+    if (groupId === null) return; // 不允許選擇 null
+
+    setActiveGroup(groupId);
+
+    // 切換分組時，選擇該分組下的第一個清單
+    const newFiltered = checklists.filter(c => c.groupId === groupId);
+
+    if (newFiltered.length > 0) {
+      setActiveChecklist(newFiltered[0].id);
+    } else {
+      // 如果該分組下沒有清單，自動創建一個新的清單
+      createChecklist(DEFAULT_CHECKLIST_NAME, groupId);
+    }
   };
 
   const handleReorder = (data: ChecklistItem[]) => {
-    if (!activeChecklistId) return;
-    reorderItems(activeChecklistId, data);
+    if (!activeChecklist?.id) return;
+    reorderItems(activeChecklist.id, data);
   };
 
   // 渲染列表项
   const renderItem = (params: any) => {
-    if (!activeChecklistId) return null;
+    if (!activeChecklist?.id) return null;
 
     const {item, drag, isActive} = params;
     const itemContent = (
@@ -83,9 +147,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
         title={item.title}
         icon={item.icon}
         checked={item.checked}
-        onToggle={() => toggleItemCheck(activeChecklistId, item.id)}
-        onDelete={() => deleteItem(activeChecklistId, item.id)}
-        onUpdate={newTitle => updateItem(activeChecklistId, item.id, newTitle)}
+        onToggle={() => toggleItemCheck(activeChecklist.id, item.id)}
+        onDelete={() => deleteItem(activeChecklist.id, item.id)}
+        onUpdate={newTitle => updateItem(activeChecklist.id, item.id, newTitle)}
         drag={drag}
         isActive={isActive}
       />
@@ -99,6 +163,33 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     return itemContent;
   };
 
+  // 渲染清單選擇器
+  const renderChecklistSelector = () => {
+    if (filteredChecklists.length <= 1) return null;
+
+    return (
+      <View className="bg-white px-4 py-2 border-b border-gray-200">
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {filteredChecklists.map(checklist => (
+            <TouchableOpacity
+              key={checklist.id}
+              onPress={() => setActiveChecklist(checklist.id)}
+              className={`px-4 py-2 mx-1 rounded-lg ${
+                activeChecklistId === checklist.id ? 'bg-primary' : 'bg-gray-100'
+              }`}>
+              <Text
+                className={`text-sm font-semibold ${
+                  activeChecklistId === checklist.id ? 'text-white' : 'text-textPrimary'
+                }`}>
+                {checklist.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+    );
+  };
+
   // 計算進度
   const progress = activeChecklist
     ? activeChecklist.items.length > 0
@@ -109,7 +200,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
       : 0
     : 0;
 
-  if (!activeChecklist) {
+  // 如果没有任何清单，显示空状态
+  if (checklists.length === 0) {
     return (
       <SafeAreaView className="flex-1 bg-background">
         <Header
@@ -129,7 +221,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
       <SafeAreaView className="flex-1 bg-background" edges={['top']}>
         {/* Header */}
         <Header
-          title={activeChecklist.name}
+          title={activeChecklist?.name || t('app.name')}
           rightButton={{
             icon: 'refresh',
             onPress: handleReset,
@@ -138,6 +230,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
 
         {/* Personal ToolBar */}
         <PersonalToolBar />
+
+        {/* 分組標籤 */}
+        <GroupTabs
+          groups={groups}
+          activeGroupId={activeGroupId}
+          onSelectGroup={handleSelectGroup}
+          onCreateGroup={handleCreateGroup}
+        />
+
+        {/* 清單選擇器（如果有多個清單） */}
+        {renderChecklistSelector()}
 
         {/* 進度條 */}
         <View className="bg-white px-4 py-3 mb-2">
@@ -156,7 +259,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
           <AddItemInput onAdd={handleAddItem} placeholder={t('home.addItemPlaceholder')} />
 
           {/* 拖拽清單 */}
-          {activeChecklist.items.length === 0 ? (
+          {!activeChecklist || activeChecklist.items.length === 0 ? (
             <View className="flex-1 items-center justify-center">
               <Text className="text-gray-400 text-base text-center">
                 {t('home.emptyList')}

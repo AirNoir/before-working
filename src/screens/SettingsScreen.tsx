@@ -34,10 +34,14 @@ interface SettingsScreenProps {
 
 export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
   const {t, i18n} = useTranslation();
-  const {settings, updateNotificationSettings, updateLanguage} = useAppStore();
+  const {settings, updateNotificationSettings, updateLanguage, updateResetTime} = useAppStore();
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [showResetTimePicker, setShowResetTimePicker] = useState(false);
   const [tempTime, setTempTime] = useState(
     parseTimeString(settings.notification.time),
+  );
+  const [tempResetTime, setTempResetTime] = useState(
+    settings.resetTime ? parseTimeString(settings.resetTime) : new Date(),
   );
 
   const handleToggleNotification = async (value: boolean) => {
@@ -86,6 +90,28 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
 
   const handleLanguageChange = (language: SupportedLanguage) => {
     updateLanguage(language);
+  };
+
+  const handleResetTimeChange = (event: any, selectedDate?: Date) => {
+    if (Platform.OS === 'android') {
+      setShowResetTimePicker(false);
+    }
+
+    if (selectedDate) {
+      setTempResetTime(selectedDate);
+      if (Platform.OS === 'android') {
+        updateResetTime(formatTime(selectedDate));
+      }
+    }
+  };
+
+  const handleResetTimeConfirm = () => {
+    setShowResetTimePicker(false);
+    updateResetTime(formatTime(tempResetTime));
+  };
+
+  const handleDisableResetTime = () => {
+    updateResetTime(null);
   };
 
   return (
@@ -156,6 +182,74 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
                 onPress={handleTestNotification}
               />
             </>
+          )}
+        </View>
+
+        {/* 重置時間設置區塊 */}
+        <View className="bg-white mt-4 mx-4 rounded-lg p-4">
+          <Text className="text-textPrimary font-bold text-lg mb-3">
+            {t('settings.resetTime.title')}
+          </Text>
+
+          <View className="mb-4">
+            <Text className="text-textPrimary text-base mb-2">
+              {t('settings.resetTime.description')}
+            </Text>
+          </View>
+
+          {/* 重置時間選擇 */}
+          <View className="flex-row justify-between items-center mb-4">
+            <Text className="text-textPrimary text-base">
+              {t('settings.resetTime.resetTime')}
+            </Text>
+            {settings.resetTime ? (
+              <View className="flex-row items-center">
+                <TouchableOpacity onPress={() => setShowResetTimePicker(true)}>
+                  <Text className="text-primary text-base font-semibold mr-3">
+                    {settings.resetTime}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={handleDisableResetTime}>
+                  <Text className="text-warning text-sm">
+                    {t('settings.resetTime.disable')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            ) : (
+              <TouchableOpacity onPress={() => setShowResetTimePicker(true)}>
+                <Text className="text-gray-400 text-base">
+                  {t('settings.resetTime.notSet')}
+                </Text>
+              </TouchableOpacity>
+            )}
+          </View>
+
+          {/* 重置時間選擇器 */}
+          {showResetTimePicker && (
+            <View>
+              <DateTimePicker
+                value={tempResetTime}
+                mode="time"
+                is24Hour={true}
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                onChange={handleResetTimeChange}
+              />
+              {Platform.OS === 'ios' && (
+                <View className="flex-row gap-2 mt-2">
+                  <Button
+                    title={t('common.confirm')}
+                    onPress={handleResetTimeConfirm}
+                    className="flex-1"
+                  />
+                  <Button
+                    title={t('common.cancel')}
+                    variant="outline"
+                    onPress={() => setShowResetTimePicker(false)}
+                    className="flex-1"
+                  />
+                </View>
+              )}
+            </View>
           )}
         </View>
 

@@ -9,4 +9,4 @@ export {AddItemInput} from './AddItemInput';
 export {IconPicker} from './IconPicker';
 export {FlipClock} from './FlipClock';
 export {PersonalToolBar} from './PersonalToolBar';
-
+export {GroupTabs} from './GroupTabs';

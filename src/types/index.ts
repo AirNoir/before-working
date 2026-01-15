@@ -11,12 +11,24 @@ export interface ChecklistItem {
 }
 
 /**
+ * 清單分組類型
+ */
+export interface ChecklistGroup {
+  id: string;
+  name: string;
+  icon?: string; // MDI 圖示名稱
+  order: number;
+  createdAt: number;
+}
+
+/**
  * 清單類型
  */
 export interface Checklist {
   id: string;
   name: string;
   items: ChecklistItem[];
+  groupId: string | null; // 所屬分組 ID，null 表示未分組
   createdAt: number;
   updatedAt: number;
 }
@@ -53,6 +65,7 @@ export interface AppSettings {
   theme: 'light' | 'dark'; // 預留深色模式
   language: SupportedLanguage; // 語言設定
   clockFormat: '12h' | '24h'; // 時鐘格式：12 小時制或 24 小時制
+  resetTime: string | null; // 每日重置時間，格式: "HH:mm" 例如 "06:30"，null 表示未設置
 }
 
 /**
@@ -60,7 +73,9 @@ export interface AppSettings {
  */
 export interface AppState {
   checklists: Checklist[];
+  groups: ChecklistGroup[]; // 清單分組
   activeChecklistId: string | null;
+  activeGroupId: string | null; // 當前選中的分組 ID，null 表示顯示所有
   settings: AppSettings;
   isLoading: boolean;
 }

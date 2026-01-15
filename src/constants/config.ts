@@ -7,6 +7,9 @@ export const STORAGE_KEYS = {
   CHECKLISTS: '@CheckMeOut:checklists',
   SETTINGS: '@CheckMeOut:settings',
   ACTIVE_CHECKLIST: '@CheckMeOut:activeChecklist',
+  GROUPS: '@CheckMeOut:groups',
+  ACTIVE_GROUP: '@CheckMeOut:activeGroup',
+  LAST_RESET_DATE: '@CheckMeOut:lastResetDate', // 上次重置的日期
 } as const;
 
 // 默認通知配置
