@@ -22,8 +22,7 @@ import {APP_INFO} from '@constants/config';
 import {requestNotificationPermission, sendTestNotification} from '@utils/notification';
 import {parseTimeString, formatTime} from '@utils/helpers';
 import {getPermissionDescription, isPremiumUser} from '@utils/permission';
-import {supportedLanguages} from '@locales/index';
-import type {SupportedLanguage} from '@types/index';
+import {supportedLanguages, type SupportedLanguage} from '@locales/index';
 
 interface SettingsScreenProps {
   navigation: any;
@@ -150,7 +149,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
               value={settings.notification.enabled}
               onValueChange={handleToggleNotification}
               trackColor={{false: COLORS.gray[300], true: COLORS.primary}}
-              thumbColor={COLORS.backgroundAlt}
+              thumbColor={COLORS.blue[600]}
             />
           </View>
 
@@ -162,7 +161,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
                   {t('settings.notification.reminderTime')}
                 </Text>
                 <TouchableOpacity onPress={() => setShowTimePicker(true)}>
-                  <Text className="text-primary text-base font-semibold">
+                  <Text className="text-blue-600 text-base font-semibold">
                     {settings.notification.time}
                   </Text>
                 </TouchableOpacity>
@@ -182,20 +181,20 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
                     <Button
                       title={t('common.confirm')}
                       onPress={handleTimeConfirm}
-                      className="mt-2"
+                      className="mt-2 bg-blue-700"
                     />
                   )}
                 </View>
               )}
 
               {/* 測試通知按鈕 */}
-              <Button
+              {/* <Button
                 title={t('settings.notification.testNotification')}
                 variant="outline"
-                textClassName="text-blue-600"
-                className="border-2 border-blue-500"
+                textClassName="text-red-400"
+                className="border-2 border-red-300"
                 onPress={handleTestNotification}
-              />
+              /> */}
             </>
           )}
         </View>
@@ -218,7 +217,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
             {settings.resetTime ? (
               <View className="flex-row items-center">
                 <TouchableOpacity onPress={() => setShowResetTimePicker(true)}>
-                  <Text className="text-primary text-base font-semibold mr-3">
+                  <Text className="text-blue-600 text-base font-semibold mr-3">
                     {settings.resetTime}
                   </Text>
                 </TouchableOpacity>
@@ -248,7 +247,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
                   <Button
                     title={t('common.confirm')}
                     onPress={handleResetTimeConfirm}
-                    className="flex-1"
+                    className="flex-1 bg-blue-700"
                   />
                   <Button
                     title={t('common.cancel')}
@@ -272,7 +271,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
             <Text className="text-textPrimary text-sm mb-1">
               {t('settings.language.currentLanguage')}
             </Text>
-            <Text className="text-primary font-semibold text-base">
+            <Text className="text-blue-600 font-semibold text-base">
               {supportedLanguages.find(lang => lang.code === settings.language)?.name ||
                 t('settings.language.zhTW')}
             </Text>
@@ -285,13 +284,13 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
                 onPress={() => handleLanguageChange(lang.code)}
                 className={`p-3 mb-2 rounded-lg border-2 ${
                   settings.language === lang.code
-                    ? 'border-primary bg-primary/10'
+                    ? 'border-blue-600 bg-primary/10'
                     : 'border-gray-200 bg-white'
                 }`}>
                 <Text
                   className={`text-base ${
                     settings.language === lang.code
-                      ? 'text-primary font-semibold'
+                      ? 'text-blue-600 font-semibold'
                       : 'text-textPrimary'
                   }`}>
                   {lang.name}
@@ -312,7 +311,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
             <Text className="text-textPrimary text-sm mb-1">
               {t('settings.account.currentPermission')}
             </Text>
-            <Text className="text-primary font-semibold text-base">
+            <Text className="text-blue-600 font-semibold text-base">
               {getPermissionDescription(settings.userPermission)}
             </Text>
           </View>

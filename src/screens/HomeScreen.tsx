@@ -263,7 +263,17 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
         <View className="bg-white px-4 py-3 mb-2">
           <View className="flex-row justify-between items-center mb-2">
             <Text className="text-textPrimary font-semibold">{t('home.progress')}</Text>
-            <Text className="text-primary font-bold text-lg">{progress}%</Text>
+            <View className="flex-row items-center">
+              <Text className="text-blue-800 font-bold text-lg">{progress}%</Text>
+              {progress === 100 && (
+                <MaterialCommunityIcons
+                  name="trophy"
+                  size={24}
+                  color={COLORS.orange[200]}
+                  style={{marginLeft: 8}}
+                />
+              )}
+            </View>
           </View>
           <View className="h-2 bg-gray-200 rounded-full overflow-hidden">
             <View className="h-full bg-lavender rounded-full" style={{width: `${progress}%`}} />
