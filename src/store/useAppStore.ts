@@ -4,19 +4,9 @@
  */
 
 import {create} from 'zustand';
-import type {
-  AppState,
-  Checklist,
-  ChecklistItem,
-  AppSettings,
-  UserPermission,
-  SupportedLanguage,
-} from '@types/index';
-import {
-  STORAGE_KEYS,
-  DEFAULT_NOTIFICATION,
-  DEFAULT_CHECKLIST_NAME,
-} from '@constants/config';
+import type {AppState, Checklist, ChecklistItem, AppSettings, SupportedLanguage} from '@/types';
+import {UserPermission} from '@/types';
+import {STORAGE_KEYS, DEFAULT_NOTIFICATION, DEFAULT_CHECKLIST_NAME} from '@constants/config';
 import {saveData, getData} from '@utils/storage';
 import {generateId} from '@utils/helpers';
 import {scheduleDailyNotification} from '@utils/notification';
@@ -25,13 +15,13 @@ import i18n from '@locales/index';
 interface AppStore extends AppState {
   // 初始化
   initialize: () => Promise<void>;
-  
+
   // 清單操作
   createChecklist: (name: string) => void;
   deleteChecklist: (checklistId: string) => void;
   updateChecklistName: (checklistId: string, name: string) => void;
   setActiveChecklist: (checklistId: string) => void;
-  
+
   // 清單項目操作
   addItem: (checklistId: string, title: string, icon?: string) => void;
   deleteItem: (checklistId: string, itemId: string) => void;
@@ -39,13 +29,13 @@ interface AppStore extends AppState {
   toggleItemCheck: (checklistId: string, itemId: string) => void;
   resetAllItems: (checklistId: string) => void;
   reorderItems: (checklistId: string, newItems: ChecklistItem[]) => void;
-  
+
   // 設置操作
   updateNotificationSettings: (enabled: boolean, time?: string) => void;
   updateUserPermission: (permission: UserPermission) => void;
   updateLanguage: (language: SupportedLanguage) => void;
   updateClockFormat: (format: '12h' | '24h') => void;
-  
+
   // 持久化
   saveToStorage: () => Promise<void>;
 }
@@ -102,7 +92,7 @@ const createDefaultChecklist = (): Checklist => {
  */
 const createDefaultSettings = (): AppSettings => ({
   notification: {...DEFAULT_NOTIFICATION},
-  userPermission: 'free', // 默認為免費版，但目前全開啟
+  userPermission: UserPermission.FREE, // 默認為免費版，但目前全開啟
   theme: 'light',
   language: 'zh-TW', // 默認繁體中文
   clockFormat: '24h', // 默認24小時制
@@ -126,10 +116,11 @@ export const useAppStore = create<AppStore>((set, get) => ({
       const storedActiveId = await getData<string>(STORAGE_KEYS.ACTIVE_CHECKLIST);
 
       let checklists = storedChecklists || [];
-      
+
       // 如果沒有清單，創建默認清單
       if (checklists.length === 0) {
         const defaultChecklist = createDefaultChecklist();
+        console.log('defaultChecklist', defaultChecklist);
         checklists = [defaultChecklist];
       }
 
@@ -185,7 +176,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   deleteChecklist: checklistId => {
     const state = get();
     const newChecklists = state.checklists.filter(c => c.id !== checklistId);
-    
+
     // 如果刪除的是當前活動清單，切換到第一個清單
     const newActiveId =
       state.activeChecklistId === checklistId
@@ -204,9 +195,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
   updateChecklistName: (checklistId, name) => {
     set(state => ({
       checklists: state.checklists.map(checklist =>
-        checklist.id === checklistId
-          ? {...checklist, name, updatedAt: Date.now()}
-          : checklist,
+        checklist.id === checklistId ? {...checklist, name, updatedAt: Date.now()} : checklist,
       ),
     }));
 
@@ -228,7 +217,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
     const newItem: ChecklistItem = {
       id: generateId(),
       title,
-      icon,
+      icon: icon || 'star', // 如果沒有選擇 icon，則使用星星作為預設
       checked: false,
       order: checklist.items.length,
       createdAt: Date.now(),
@@ -273,9 +262,7 @@ export const useAppStore = create<AppStore>((set, get) => ({
         c.id === checklistId
           ? {
               ...c,
-              items: c.items.map(item =>
-                item.id === itemId ? {...item, title} : item,
-              ),
+              items: c.items.map(item => (item.id === itemId ? {...item, title} : item)),
               updatedAt: Date.now(),
             }
           : c,
@@ -414,4 +401,3 @@ export const useAppStore = create<AppStore>((set, get) => ({
     }
   },
 }));
-

@@ -74,15 +74,15 @@ export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
       </TouchableOpacity>
 
       {/* 圖示 */}
-      {icon && (
+      {
         <View className="mr-3">
           <MaterialCommunityIcons
-            name={icon as any}
+            name={(icon as any) || 'star'}
             size={24}
             color={checked ? COLORS.gray[400] : COLORS.primary}
           />
         </View>
-      )}
+      }
 
       {/* 內容區域 */}
       <View className="flex-1">

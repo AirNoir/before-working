@@ -45,7 +45,6 @@ const WX_CODE_MAP: Record<number, WeatherCondition> = {
  */
 export async function fetchWeatherByLocation(locationName: string): Promise<WeatherData | null> {
   // 如果沒有 API Key，直接回傳模擬資料（開發測試用）
-  console.log('CWA_API_KEY', CWA_API_KEY);
   if (!CWA_API_KEY || CWA_API_KEY === '') {
     if (__DEV__) {
       console.log('CWA API Key not set, using mock data for:', locationName);
@@ -84,8 +83,6 @@ export async function fetchWeatherByLocation(locationName: string): Promise<Weat
       (station: any) => station.locationName === formattedLocationName,
     );
 
-    console.log('location>>>>>>>>>', location);
-
     const weatherElements = location.weatherElement;
 
     // 取得天氣現象
@@ -95,10 +92,6 @@ export async function fetchWeatherByLocation(locationName: string): Promise<Weat
     const wxCode = parseInt(wxData?.parameterValue || '1', 10); // 取得天氣現象值 (ex: 1:晴天, 2:多雲, 3:陰天, 4:雨天)
     const wxText = wxData?.parameterName || '未知';
 
-    console.log('wxData', wxData);
-    console.log('wxCode', wxCode);
-    console.log('wxText', wxText);
-
     // 取得溫度（使用第一時段的資料）
     const minTElement = weatherElements.find((el: any) => el.elementName === 'MinT');
     const maxTElement = weatherElements.find((el: any) => el.elementName === 'MaxT');
@@ -106,19 +99,13 @@ export async function fetchWeatherByLocation(locationName: string): Promise<Weat
       throw new Error('Invalid API response: missing temperature data');
     }
 
-    console.log('minTElement', minTElement);
-    console.log('maxTElement', maxTElement);
-
     const minTData = minTElement.time[0].parameter;
     const minTValue = minTData?.parameterName;
-    console.log('minTData', minTData);
 
     const maxTData = maxTElement.time[0].parameter;
     const maxTValue = maxTData?.parameterName;
 
     const condition = WX_CODE_MAP[wxCode] || 'unknown';
-    console.log('minTValue', minTValue);
-    console.log('maxTValue', maxTValue);
 
     return {
       minTemperature: minTValue,

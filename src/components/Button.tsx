@@ -31,7 +31,7 @@ export const Button: React.FC<ButtonProps> = ({
 }) => {
   const getButtonStyle = () => {
     const baseStyle = 'px-6 py-3 rounded-lg flex-row items-center justify-center';
-    
+
     switch (variant) {
       case 'primary':
         return `${baseStyle} bg-primary`;
@@ -70,4 +70,3 @@ export const Button: React.FC<ButtonProps> = ({
     </TouchableOpacity>
   );
 };
-
