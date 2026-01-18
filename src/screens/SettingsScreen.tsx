@@ -2,7 +2,7 @@
  * 設置頁面
  */
 
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -20,7 +20,7 @@ import {Header, Button} from '@components/index';
 import {COLORS} from '@constants/colors';
 import {APP_INFO} from '@constants/config';
 import {requestNotificationPermission, sendTestNotification} from '@utils/notification';
-import {parseTimeString, formatTime} from '@utils/helpers';
+import {parseTimeString, formatTime, formatTimeForDisplay} from '@utils/helpers';
 import {getPermissionDescription, isPremiumUser} from '@utils/permission';
 import {supportedLanguages, type SupportedLanguage} from '@locales/index';
 
@@ -38,6 +38,25 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
   const [tempResetTime, setTempResetTime] = useState(
     settings.resetTime ? parseTimeString(settings.resetTime) : new Date(),
   );
+
+  // 當設置中的時間或時鐘格式改變時，更新臨時時間狀態
+  useEffect(() => {
+    setTempTime(parseTimeString(settings.notification.time));
+    // 如果時間選擇器是打開的，關閉它以確保顯示正確
+    if (showTimePicker) {
+      setShowTimePicker(false);
+    }
+  }, [settings.notification.time, settings.clockFormat]);
+
+  useEffect(() => {
+    if (settings.resetTime) {
+      setTempResetTime(parseTimeString(settings.resetTime));
+    }
+    // 如果重置時間選擇器是打開的，關閉它以確保顯示正確
+    if (showResetTimePicker) {
+      setShowResetTimePicker(false);
+    }
+  }, [settings.resetTime, settings.clockFormat]);
 
   const handleToggleNotification = async (value: boolean) => {
     if (value) {
@@ -162,7 +181,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
                 </Text>
                 <TouchableOpacity onPress={() => setShowTimePicker(true)}>
                   <Text className="text-blue-600 text-base font-semibold">
-                    {settings.notification.time}
+                    {formatTimeForDisplay(settings.notification.time, settings.clockFormat)}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -173,7 +192,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
                   <DateTimePicker
                     value={tempTime}
                     mode="time"
-                    is24Hour={true}
+                    is24Hour={settings.clockFormat === '24h'}
                     display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                     onChange={handleTimeChange}
                   />
@@ -218,7 +237,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
               <View className="flex-row items-center">
                 <TouchableOpacity onPress={() => setShowResetTimePicker(true)}>
                   <Text className="text-blue-600 text-base font-semibold mr-3">
-                    {settings.resetTime}
+                    {formatTimeForDisplay(settings.resetTime, settings.clockFormat)}
                   </Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={handleDisableResetTime}>
@@ -238,7 +257,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
               <DateTimePicker
                 value={tempResetTime}
                 mode="time"
-                is24Hour={true}
+                is24Hour={settings.clockFormat === '24h'}
                 display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                 onChange={handleResetTimeChange}
               />

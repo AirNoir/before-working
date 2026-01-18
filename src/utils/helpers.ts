@@ -10,12 +10,47 @@ export const generateId = (): string => {
 };
 
 /**
- * 格式化時間為 HH:mm
+ * 格式化時間為 HH:mm (24小時制，用於存儲)
  */
 export const formatTime = (date: Date): string => {
   const hours = date.getHours().toString().padStart(2, '0');
   const minutes = date.getMinutes().toString().padStart(2, '0');
   return `${hours}:${minutes}`;
+};
+
+/**
+ * 格式化時間字符串為顯示格式（根據12/24小時制）
+ * @param timeString 時間字符串，格式: "HH:mm" (24小時制)
+ * @param format 時鐘格式: '12h' | '24h'
+ * @returns 格式化後的時間字符串
+ */
+export const formatTimeForDisplay = (timeString: string, format: '12h' | '24h'): string => {
+  if (!timeString || typeof timeString !== 'string') {
+    return '00:00';
+  }
+  
+  const parts = timeString.split(':');
+  if (parts.length !== 2) {
+    return timeString; // 如果格式不对，直接返回原字符串
+  }
+  
+  const hours = parseInt(parts[0], 10);
+  const minutes = parseInt(parts[1], 10);
+  
+  // 验证数值有效性
+  if (isNaN(hours) || isNaN(minutes) || hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+    return timeString; // 如果数值无效，直接返回原字符串
+  }
+  
+  // 如果是12小时制
+  if (format === '12h') {
+    const period = hours >= 12 ? 'PM' : 'AM';
+    const displayHours = hours % 12 || 12;
+    return `${displayHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${period}`;
+  }
+  
+  // 24小時制：直接返回原始小时数
+  return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 };
 
 /**
