@@ -48,6 +48,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     groups,
     activeChecklistId,
     activeGroupId,
+    settings,
     addItem,
     deleteItem,
     updateItem,
@@ -60,6 +61,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     createGroup,
     createChecklist,
     updateGroupName,
+    importGroupTemplate,
   } = useAppStore();
 
   // 根據選中的分組過濾清單
@@ -256,6 +258,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
           onSelectGroup={handleSelectGroup}
           onCreateGroup={handleCreateGroup}
           onUpdateGroup={updateGroupName}
+          userPermission={settings.userPermission}
+          onShowUpgrade={() => navigation.navigate('Settings')}
+          onImportTemplate={importGroupTemplate}
         />
 
         {/* 清單選擇器（如果有多個清單） */}

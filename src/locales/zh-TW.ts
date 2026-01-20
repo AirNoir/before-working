@@ -16,6 +16,7 @@ export default {
     back: '返回',
     add: '新增',
     done: '完成',
+    error: '錯誤',
   },
 
   // 應用名稱
@@ -139,5 +140,16 @@ export default {
     deleteConfirm: '確認刪除',
     deleteMessage: '確定要刪除「{{name}}」分類嗎？刪除後該分類下的清單將移至未分組。',
     emptyName: '分類名稱不能為空',
+    upgradeTitle: '升級到付費版',
+    upgradeMessage: '免費版最多只能創建 {{limit}} 個分類。升級到付費版可無限創建分類並使用分類套組。',
+    upgradeButton: '前往升級',
+    importTemplate: '引入分類套組',
+    selectTemplate: '選擇分類套組',
+    templatePremiumOnly: '此功能僅限付費版使用',
+    templateUpgradeMessage: '引入分類套組功能僅限付費版使用。升級後可快速創建包含預設項目的分類。',
+    templateImported: '引入成功',
+    templateImportedMessage: '分類套組已成功引入！',
+    templateImportFailed: '引入失敗，請稍後再試',
+    templateItemsCount: '{{count}} 個項目',
   },
 };

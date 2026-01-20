@@ -33,6 +33,31 @@ export const getChecklistLimit = (userPermission: UserPermission): number => {
 };
 
 /**
+ * 檢查用戶是否可以創建新分類
+ */
+export const canCreateGroup = (
+  currentCount: number,
+  userPermission: UserPermission,
+): boolean => {
+  if (userPermission === UserPermission.PREMIUM) {
+    return true; // 付費用戶無限制
+  }
+
+  // 免費用戶限制
+  return currentCount < PERMISSION_LIMITS.FREE_GROUP_COUNT;
+};
+
+/**
+ * 獲取用戶可創建的分類數量限制
+ */
+export const getGroupLimit = (userPermission: UserPermission): number => {
+  if (userPermission === UserPermission.PREMIUM) {
+    return PERMISSION_LIMITS.PREMIUM_GROUP_COUNT; // -1 表示無限
+  }
+  return PERMISSION_LIMITS.FREE_GROUP_COUNT;
+};
+
+/**
  * 檢查用戶是否為付費用戶
  */
 export const isPremiumUser = (userPermission: UserPermission): boolean => {

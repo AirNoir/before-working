@@ -16,6 +16,8 @@ import {UserPermission} from '@/types';
 import {STORAGE_KEYS, DEFAULT_NOTIFICATION, DEFAULT_CHECKLIST_NAME} from '@constants/config';
 import {saveData, getData} from '@utils/storage';
 import {generateId} from '@utils/helpers';
+import {canCreateGroup} from '@utils/permission';
+import {getTemplateById, convertTemplateToGroup} from '@constants/groupTemplates';
 import {scheduleDailyNotification} from '@utils/notification';
 import i18n from '@locales/index';
 import {checkAndResetIfNeeded} from '@utils/reset';
@@ -36,6 +38,7 @@ interface AppStore extends AppState {
   deleteGroup: (groupId: string) => void;
   updateGroupName: (groupId: string, name: string) => void;
   setActiveGroup: (groupId: string | null) => void;
+  importGroupTemplate: (templateId: string) => void; // 引入分類套組
 
   // 清單項目操作
   addItem: (checklistId: string, title: string, icon?: string) => void;
@@ -353,15 +356,54 @@ export const useAppStore = create<AppStore>((set, get) => ({
 
   // 創建分組
   createGroup: name => {
+    const state = get();
+    
+    // 檢查權限
+    if (!canCreateGroup(state.groups.length, state.settings.userPermission)) {
+      // 權限不足，返回錯誤（由調用方處理提示）
+      throw new Error('GROUP_LIMIT_REACHED');
+    }
+
     const newGroup: ChecklistGroup = {
       id: generateId(),
       name,
-      order: get().groups.length,
+      order: state.groups.length,
       createdAt: Date.now(),
     };
 
-    set(state => ({
-      groups: [...state.groups, newGroup],
+    set(currentState => ({
+      groups: [...currentState.groups, newGroup],
+    }));
+
+    get().saveToStorage();
+  },
+
+  // 引入分類套組
+  importGroupTemplate: templateId => {
+    const state = get();
+    
+    // 檢查權限（只有付費用戶可以引入套組）
+    if (state.settings.userPermission !== UserPermission.PREMIUM) {
+      throw new Error('PREMIUM_REQUIRED');
+    }
+
+    // 檢查分類數量限制
+    if (!canCreateGroup(state.groups.length, state.settings.userPermission)) {
+      throw new Error('GROUP_LIMIT_REACHED');
+    }
+
+    const template = getTemplateById(templateId);
+    if (!template) {
+      throw new Error('TEMPLATE_NOT_FOUND');
+    }
+
+    const {group, checklist} = convertTemplateToGroup(template, generateId);
+
+    set(currentState => ({
+      groups: [...currentState.groups, group],
+      checklists: [...currentState.checklists, checklist],
+      activeGroupId: group.id,
+      activeChecklistId: checklist.id,
     }));
 
     get().saveToStorage();

@@ -8,7 +8,9 @@ import {View, Text, TouchableOpacity, ScrollView, TextInput, Alert, StyleSheet} 
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useTranslation} from 'react-i18next';
 import {COLORS} from '@constants/colors';
-import type {ChecklistGroup} from '@/types';
+import {canCreateGroup, getGroupLimit, isPremiumUser} from '@utils/permission';
+import {GroupTemplatePicker} from './GroupTemplatePicker';
+import type {ChecklistGroup, UserPermission} from '@/types';
 
 interface GroupTabsProps {
   groups: ChecklistGroup[];
@@ -16,6 +18,9 @@ interface GroupTabsProps {
   onSelectGroup: (groupId: string | null) => void;
   onCreateGroup: (name: string) => void;
   onUpdateGroup?: (groupId: string, name: string) => void;
+  userPermission: UserPermission;
+  onShowUpgrade?: () => void; // 顯示升級提示
+  onImportTemplate?: (templateId: string) => void; // 引入分類套組
 }
 
 export const GroupTabs: React.FC<GroupTabsProps> = ({
@@ -24,11 +29,15 @@ export const GroupTabs: React.FC<GroupTabsProps> = ({
   onSelectGroup,
   onCreateGroup,
   onUpdateGroup,
+  userPermission,
+  onShowUpgrade,
+  onImportTemplate,
 }) => {
   const {t} = useTranslation();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [newGroupName, setNewGroupName] = useState('');
   const [showManageDialog, setShowManageDialog] = useState(false);
+  const [showTemplatePicker, setShowTemplatePicker] = useState(false);
   const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
   const [editGroupName, setEditGroupName] = useState('');
 
@@ -37,9 +46,55 @@ export const GroupTabs: React.FC<GroupTabsProps> = ({
       Alert.alert('錯誤', t('group.emptyName'));
       return;
     }
-    onCreateGroup(newGroupName.trim());
-    setNewGroupName('');
-    setShowCreateDialog(false);
+
+    // 檢查權限
+    if (!canCreateGroup(groups.length, userPermission)) {
+      // 顯示升級提示
+      Alert.alert(
+        t('group.upgradeTitle'),
+        t('group.upgradeMessage', {
+          limit: getGroupLimit(userPermission),
+        }),
+        [
+          {text: t('common.cancel'), style: 'cancel'},
+          {
+            text: t('group.upgradeButton'),
+            onPress: () => {
+              if (onShowUpgrade) {
+                onShowUpgrade();
+              }
+            },
+          },
+        ],
+      );
+      return;
+    }
+
+    try {
+      onCreateGroup(newGroupName.trim());
+      setNewGroupName('');
+      setShowCreateDialog(false);
+    } catch (error: any) {
+      if (error.message === 'GROUP_LIMIT_REACHED') {
+        Alert.alert(
+          t('group.upgradeTitle'),
+          t('group.upgradeMessage', {
+            limit: getGroupLimit(userPermission),
+          }),
+          [
+            {text: t('common.cancel'), style: 'cancel'},
+            {
+              text: t('group.upgradeButton'),
+              onPress: () => {
+                if (onShowUpgrade) {
+                  onShowUpgrade();
+                }
+              },
+            },
+          ],
+        );
+      }
+    }
   };
 
   const handleStartEdit = (group: ChecklistGroup) => {
@@ -217,11 +272,35 @@ export const GroupTabs: React.FC<GroupTabsProps> = ({
               handleCloseManageDialog();
               setShowCreateDialog(true);
             }}
-            className="bg-primary rounded-lg py-3 flex-row items-center justify-center">
+            className="bg-primary rounded-lg py-3 flex-row items-center justify-center mb-2">
             <MaterialCommunityIcons name="plus" size={20} color={COLORS.gray[600]} />
             <Text className="text-gray-600 font-semibold ml-2">{t('group.createGroup')}</Text>
           </TouchableOpacity>
+
+          {/* 引入分類套組按鈕 */}
+          {onImportTemplate && (
+            <TouchableOpacity
+              onPress={() => {
+                handleCloseManageDialog();
+                setShowTemplatePicker(true);
+              }}
+              className="bg-blue-600 rounded-lg py-3 flex-row items-center justify-center">
+              <MaterialCommunityIcons name="package-variant" size={20} color="white" />
+              <Text className="text-white font-semibold ml-2">{t('group.importTemplate')}</Text>
+            </TouchableOpacity>
+          )}
         </View>
+      )}
+
+      {/* 分類套組選擇器 */}
+      {onImportTemplate && (
+        <GroupTemplatePicker
+          visible={showTemplatePicker}
+          onClose={() => setShowTemplatePicker(false)}
+          onImport={onImportTemplate}
+          userPermission={userPermission}
+          onShowUpgrade={onShowUpgrade}
+        />
       )}
     </View>
   );

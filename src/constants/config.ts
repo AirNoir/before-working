@@ -34,6 +34,8 @@ export const NOTIFICATION_CHANNEL = {
 export const PERMISSION_LIMITS = {
   FREE_CHECKLIST_COUNT: 1, // 免費版清單數量限制
   PREMIUM_CHECKLIST_COUNT: -1, // 付費版無限制（-1 表示無限）
+  FREE_GROUP_COUNT: 2, // 免費版分類數量限制
+  PREMIUM_GROUP_COUNT: -1, // 付費版無限制（-1 表示無限）
 } as const;
 
 // App 信息
