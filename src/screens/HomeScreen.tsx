@@ -59,6 +59,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     setActiveGroup,
     createGroup,
     createChecklist,
+    updateGroupName,
   } = useAppStore();
 
   // 根據選中的分組過濾清單
@@ -254,6 +255,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
           activeGroupId={activeGroupId}
           onSelectGroup={handleSelectGroup}
           onCreateGroup={handleCreateGroup}
+          onUpdateGroup={updateGroupName}
         />
 
         {/* 清單選擇器（如果有多個清單） */}

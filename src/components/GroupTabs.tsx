@@ -15,6 +15,7 @@ interface GroupTabsProps {
   activeGroupId: string | null;
   onSelectGroup: (groupId: string | null) => void;
   onCreateGroup: (name: string) => void;
+  onUpdateGroup?: (groupId: string, name: string) => void;
 }
 
 export const GroupTabs: React.FC<GroupTabsProps> = ({
@@ -22,10 +23,14 @@ export const GroupTabs: React.FC<GroupTabsProps> = ({
   activeGroupId,
   onSelectGroup,
   onCreateGroup,
+  onUpdateGroup,
 }) => {
   const {t} = useTranslation();
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [newGroupName, setNewGroupName] = useState('');
+  const [showManageDialog, setShowManageDialog] = useState(false);
+  const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
+  const [editGroupName, setEditGroupName] = useState('');
 
   const handleCreateGroup = () => {
     if (newGroupName.trim() === '') {
@@ -37,39 +42,86 @@ export const GroupTabs: React.FC<GroupTabsProps> = ({
     setShowCreateDialog(false);
   };
 
+  const handleStartEdit = (group: ChecklistGroup) => {
+    if (!onUpdateGroup) return;
+    setEditingGroupId(group.id);
+    setEditGroupName(group.name);
+  };
+
+  const handleSaveEdit = () => {
+    if (!editingGroupId || !onUpdateGroup) return;
+    if (editGroupName.trim() === '') {
+      Alert.alert('錯誤', t('group.emptyName'));
+      return;
+    }
+    onUpdateGroup(editingGroupId, editGroupName.trim());
+    setEditingGroupId(null);
+    setEditGroupName('');
+  };
+
+  const handleCancelEdit = () => {
+    setEditingGroupId(null);
+    setEditGroupName('');
+  };
+
+  const handleOpenManageDialog = () => {
+    setShowManageDialog(true);
+    setEditingGroupId(null);
+    setEditGroupName('');
+  };
+
+  const handleCloseManageDialog = () => {
+    setShowManageDialog(false);
+    setEditingGroupId(null);
+    setEditGroupName('');
+  };
+
   return (
     <View className="bg-white border-b border-gray-200">
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}>
-        {/* 各個分組 */}
-        {groups.map(group => (
-          <TouchableOpacity
-            key={group.id}
-            onPress={() => onSelectGroup(group.id)}
-            className={`px-4 py-2 mx-1 rounded-lg flex-row items-center ${
-              activeGroupId === group.id ? 'bg-primary' : 'bg-gray-100'
-            }`}
-            style={styles.tab}>
-            <Text
-              className={`text-sm font-semibold ${
-                activeGroupId === group.id ? 'text-gray-600' : 'text-textPrimary'
-              }`}>
-              {group.name}
-            </Text>
-          </TouchableOpacity>
-        ))}
+      <View className="flex-row items-center">
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.scrollContent}
+          className="flex-1">
+          {/* 各個分組 */}
+          {groups.map(group => (
+            <TouchableOpacity
+              key={group.id}
+              onPress={() => onSelectGroup(group.id)}
+              className={`px-4 py-2 mx-1 rounded-lg flex-row items-center ${
+                activeGroupId === group.id ? 'bg-primary' : 'bg-gray-100'
+              }`}
+              style={styles.tab}>
+              <Text
+                className={`text-sm font-semibold ${
+                  activeGroupId === group.id ? 'text-gray-600' : 'text-textPrimary'
+                }`}>
+                {group.name}
+              </Text>
+            </TouchableOpacity>
+          ))}
 
-        {/* 新增分類按鈕 */}
-        <TouchableOpacity
-          onPress={() => setShowCreateDialog(true)}
-          className="px-4 py-2 mx-1 rounded-lg bg-gray-400 flex-row items-center"
-          style={styles.tab}>
-          <MaterialCommunityIcons name="plus" size={16} color={COLORS.primary} />
-          <Text className="text-sm font-semibold text-white ml-1">{t('group.createGroup')}</Text>
-        </TouchableOpacity>
-      </ScrollView>
+          {/* 新增分類按鈕 */}
+          <TouchableOpacity
+            onPress={() => setShowCreateDialog(true)}
+            className="px-4 py-2 mx-1 rounded-lg bg-gray-400 flex-row items-center"
+            style={styles.tab}>
+            <MaterialCommunityIcons name="plus" size={16} color={COLORS.primary} />
+            <Text className="text-sm font-semibold text-white ml-1">{t('group.createGroup')}</Text>
+          </TouchableOpacity>
+        </ScrollView>
+
+        {/* 管理按鈕 */}
+        {onUpdateGroup && (
+          <TouchableOpacity
+            onPress={handleOpenManageDialog}
+            className="px-3 py-2 mr-2"
+            activeOpacity={0.7}>
+            <MaterialCommunityIcons name="cog" size={20} color={COLORS.gray[600]} />
+          </TouchableOpacity>
+        )}
+      </View>
 
       {/* 創建分組對話框 */}
       {showCreateDialog && (
@@ -102,6 +154,73 @@ export const GroupTabs: React.FC<GroupTabsProps> = ({
               <Text className="text-gray-600 font-semibold">{t('common.add')}</Text>
             </TouchableOpacity>
           </View>
+        </View>
+      )}
+
+      {/* 管理分類對話框 */}
+      {showManageDialog && (
+        <View className="absolute top-full left-0 right-0 bg-white border-t border-gray-200 p-4 z-10 shadow-lg max-h-96">
+          <View className="flex-row justify-between items-center mb-4">
+            <Text className="text-textPrimary font-bold text-lg">{t('group.manageGroups')}</Text>
+            <TouchableOpacity onPress={handleCloseManageDialog}>
+              <MaterialCommunityIcons name="close" size={24} color={COLORS.gray[600]} />
+            </TouchableOpacity>
+          </View>
+
+          {/* 分類列表 */}
+          <ScrollView className="max-h-64 mb-4">
+            {groups.map(group => (
+              <View key={group.id} className="mb-3">
+                {editingGroupId === group.id ? (
+                  // 編輯模式
+                  <View className="flex-row items-center gap-2">
+                    <TextInput
+                      className="flex-1 border border-gray-300 rounded-lg px-3 py-2 text-textPrimary"
+                      value={editGroupName}
+                      onChangeText={setEditGroupName}
+                      placeholder={t('group.groupName')}
+                      autoFocus
+                    />
+                    <TouchableOpacity
+                      onPress={handleSaveEdit}
+                      className="px-3 py-2 bg-primary rounded-lg">
+                      <MaterialCommunityIcons name="check" size={20} color={COLORS.gray[600]} />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      onPress={handleCancelEdit}
+                      className="px-3 py-2 bg-gray-200 rounded-lg">
+                      <MaterialCommunityIcons name="close" size={20} color={COLORS.gray[600]} />
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  // 顯示模式
+                  <View className="flex-row items-center justify-between bg-gray-50 rounded-lg p-3">
+                    <Text className="text-textPrimary font-semibold flex-1">{group.name}</Text>
+                    <TouchableOpacity
+                      onPress={() => handleStartEdit(group)}
+                      className="ml-2">
+                      <MaterialCommunityIcons
+                        name="pencil"
+                        size={18}
+                        color={COLORS.blue[600]}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                )}
+              </View>
+            ))}
+          </ScrollView>
+
+          {/* 新增分類按鈕 */}
+          <TouchableOpacity
+            onPress={() => {
+              handleCloseManageDialog();
+              setShowCreateDialog(true);
+            }}
+            className="bg-primary rounded-lg py-3 flex-row items-center justify-center">
+            <MaterialCommunityIcons name="plus" size={20} color={COLORS.gray[600]} />
+            <Text className="text-gray-600 font-semibold ml-2">{t('group.createGroup')}</Text>
+          </TouchableOpacity>
         </View>
       )}
     </View>

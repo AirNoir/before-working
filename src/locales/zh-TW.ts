@@ -133,6 +133,7 @@ export default {
     createGroup: '新增分類',
     editGroup: '編輯分類',
     deleteGroup: '刪除分類',
+    manageGroups: '管理分類',
     groupName: '分類名稱',
     selectGroup: '選擇分類',
     deleteConfirm: '確認刪除',
