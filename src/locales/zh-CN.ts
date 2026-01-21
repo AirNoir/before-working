@@ -58,6 +58,7 @@ export default {
       upgradeMessage: '升级到付费版以解锁：',
       upgradeFeatures: {
         unlimited: '• 无限数量清单',
+        importTemplate: '• 引入分类套组',
         cloudSync: '• 云端同步与备份',
         more: '• 更多功能即将推出...',
       },

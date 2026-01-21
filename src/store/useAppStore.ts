@@ -187,7 +187,6 @@ export const useAppStore = create<AppStore>((set, get) => ({
         const defaultChecklist = createDefaultChecklist();
         // 將默認清單分配到 "上班" 分組
         defaultChecklist.groupId = defaultGroupId;
-        console.log('defaultChecklist', defaultChecklist);
         checklists = [defaultChecklist];
       } else {
         // 檢查是否有清單屬於 "上班" 分組，如果沒有則創建一個

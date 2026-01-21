@@ -60,8 +60,6 @@ export const checkAndResetIfNeeded = async (
 
       // 更新最后重置日期
       await saveData(STORAGE_KEYS.LAST_RESET_DATE, today);
-
-      console.log(`Auto reset executed at ${resetTime}`);
     }
   } catch (error) {
     console.error('Error checking reset time:', error);

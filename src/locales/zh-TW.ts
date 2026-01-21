@@ -70,6 +70,7 @@ export default {
       upgradeMessage: '升級到付費版以解鎖：',
       upgradeFeatures: {
         unlimited: '• 無限數量清單',
+        importTemplate: '• 引入分類套組',
         cloudSync: '• 雲端同步與備份',
         more: '• 更多功能即將推出...',
       },

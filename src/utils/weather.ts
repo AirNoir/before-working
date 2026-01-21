@@ -46,9 +46,6 @@ const WX_CODE_MAP: Record<number, WeatherCondition> = {
 export async function fetchWeatherByLocation(locationName: string): Promise<WeatherData | null> {
   // 如果沒有 API Key，直接回傳模擬資料（開發測試用）
   if (!CWA_API_KEY || CWA_API_KEY === '') {
-    if (__DEV__) {
-      console.log('CWA API Key not set, using mock data for:', locationName);
-    }
     return getMockWeatherData(locationName);
   }
 

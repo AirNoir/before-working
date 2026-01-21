@@ -22,7 +22,6 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({title, leftButton, rightButton}) => {
   const {weather, loading, icon} = useWeather();
-  console.log('weather', weather);
 
   return (
     <View

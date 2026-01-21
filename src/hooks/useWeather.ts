@@ -81,7 +81,7 @@ export function useWeather(options: UseWeatherOptions = {}) {
           return;
         }
 
-        console.log('status', status);
+       
         // 取得目前位置
         const location = await Location.getCurrentPositionAsync({
           accuracy: Location.Accuracy.Balanced,
@@ -150,7 +150,7 @@ export function useWeather(options: UseWeatherOptions = {}) {
     // 由於 fetchWeather 現在在 useEffect 內部，我們需要觸發重新渲染
     // 或者使用一個 ref 來存儲 fetchWeather 函數
     // 為了簡化，這裡先不實現手動刷新功能
-    console.log('Refresh weather data');
+   
   };
 
   return {

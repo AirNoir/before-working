@@ -350,7 +350,8 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
                 {'\n'}
                 {t('settings.account.upgradeFeatures.unlimited')}
                 {'\n'}
-                {t('settings.account.upgradeFeatures.cloudSync')}
+                {t('settings.account.upgradeFeatures.importTemplate')}
+                {/* {t('settings.account.upgradeFeatures.cloudSync')} */}
                 {'\n'}
                 {t('settings.account.upgradeFeatures.more')}
               </Text>

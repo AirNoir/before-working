@@ -97,7 +97,6 @@ export const scheduleDailyNotification = async (
     },
   });
 
-  console.log(`Daily notification scheduled for ${hours}:${minutes.toString().padStart(2, '0')}`);
 };
 
 /**
@@ -105,7 +104,6 @@ export const scheduleDailyNotification = async (
  */
 export const cancelAllNotifications = async (): Promise<void> => {
   await Notifications.cancelAllScheduledNotificationsAsync();
-  console.log('All notifications cancelled');
 };
 
 /**

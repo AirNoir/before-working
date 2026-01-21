@@ -58,6 +58,7 @@ export default {
       upgradeMessage: 'Upgrade to Premium to unlock:',
       upgradeFeatures: {
         unlimited: '• Unlimited Checklists',
+        importTemplate: '• Import Template',
         cloudSync: '• Cloud Sync & Backup',
         more: '• More features coming soon...',
       },

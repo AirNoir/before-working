@@ -93,7 +93,7 @@ export const canUseCloudSync = (userPermission: UserPermission): boolean => {
 export const upgradeToPremium = async (): Promise<boolean> => {
   // TODO: 對接實際的支付系統 (IAP - In-App Purchase)
   // 這裡僅作為預留接口
-  console.log('升級到付費版的邏輯需要實現...');
+
   return false;
 };
 
