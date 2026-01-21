@@ -53,6 +53,10 @@ const FlipDigit: React.FC<FlipDigitProps> = ({digit, prevDigit}) => {
       return () => {
         clearTimeout(bottomUpdateTimer);
       };
+    } else {
+      // 如果 digit 和 prevDigit 相同，直接更新顯示（格式切換但時間未變的情況）
+      setDisplayDigit(digit);
+      setBottomDisplayDigit(digit);
     }
   }, [digit, prevDigit]);
 
@@ -121,6 +125,11 @@ const FlipDigit: React.FC<FlipDigitProps> = ({digit, prevDigit}) => {
 export const FlipClock: React.FC<FlipClockProps> = ({format, className = ''}) => {
   const [time, setTime] = useState(new Date());
   const [prevTime, setPrevTime] = useState(new Date());
+
+  // 當 format 改變時，重置 prevTime 為當前 time，避免格式切換時觸發不必要的翻頁動畫
+  useEffect(() => {
+    setPrevTime(time);
+  }, [format]);
 
   useEffect(() => {
     const timer = setInterval(() => {
