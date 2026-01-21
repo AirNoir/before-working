@@ -10,46 +10,204 @@ import {useTranslation} from 'react-i18next';
 
 // 常用圖示列表
 const COMMON_ICONS = [
+  // 日常用品
   'wallet',
   'key',
-  'badge-account',
   'cellphone',
-  'car',
-  'home',
-  'briefcase',
+  'watch',
+  'glasses',
   'sunglasses',
   'umbrella',
-  'water-bottle',
+  'cup-water',
+  'water',
+  'bag-personal',
   'laptop',
   'headphones',
-  'watch',
+  'earbuds',
+  'lotion',
+  'baby-bottle',
+  
+  // 交通工具
+  'car',
+  'bike',
+  'airplane',
+  'train',
+  'bus',
+  'scooter',
+  
+  // 建築/地點
+  'home',
+  'school',
+  'hospital-building',
+  'store',
+  'library',
+  'briefcase',
+  'bank',
+  'map',
+  
+  // 文件/文具
   'book',
+  'book-open-variant',
+  'notebook',
   'pencil',
+  'pen',
   'folder',
   'file',
-  'image',
+  'file-document',
+  'file-image',
+  'calculator',
+  
+  // 電子產品
+  'camera',
+  'power-plug',
+  'battery-charging',
+  'flashlight',
+  'radio',
+  'television',
+  
+  // 娛樂
   'music',
+  'movie',
+  'gamepad-variant',
+  'ticket',
+  'cards-playing-outline',
+  'puzzle',
+  
+  // 情感/符號
   'heart',
   'star',
   'bell',
+  'gift',
+  'trophy',
+  'medal',
+  'flag',
+  
+  // 安全/權限
   'lock',
   'shield',
-  'gift',
+  'shield-check',
+  'key-variant',
+  'account-badge',
+  'card-account-details',
+  'card-account-mail',
+  'credit-card',
+  'identifier',
+  
+  // 食品飲料
   'coffee',
-  'food',
+  'cup',
+  'food-apple',
+  'cookie',
+  'cake',
   'bottle-wine',
+  'beer',
+  'silverware-fork-knife',
+  'pot-steam',
+  'bread-slice',
+  
+  // 醫療/健康
   'pill',
   'stethoscope',
+  'medical-bag',
+  'hospital-box',
+  'bandage',
+  'heart-pulse',
+  'face-mask',
+  
+  // 運動健身
   'dumbbell',
-  'bike',
-  'run',
+  'run-fast',
+  'swim',
+  'basketball',
+  'soccer',
+  'football',
+  'baseball',
+  'tennis',
+  'yoga',
+  'hiking',
+  'surfing',
+  
+  // 寵物/動物
   'dog',
   'cat',
+  'rabbit-variant',
+  'bird',
+  'fish',
+  'turtle',
+  
+  // 植物/自然
   'flower',
+  'flower-outline',
   'tree',
-  'sun',
-  'moon',
-  'cloud',
+  'leaf',
+  'grass',
+  'sprout',
+  
+  // 天氣
+  'weather-sunny',
+  'weather-night',
+  'weather-cloudy',
+  'weather-rainy',
+  'weather-snowy',
+  'weather-partly-cloudy',
+  'weather-lightning',
+  'weather-windy',
+  
+  // 季節/時間
+  'snowflake',
+  'fire',
+  'lightbulb',
+  'lightbulb-outline',
+  'candle',
+  
+  // 服裝/配件
+  'tshirt-crew',
+  'shoe-sneaker',
+  'shoe-formal',
+  'hat-fedora',
+  'tie',
+  'hanger',
+  'bag-suitcase',
+  
+  // 清潔/個人用品
+  'shower',
+  'rug',
+  'toothbrush-paste',
+  'hair-dryer',
+  'bottle-tonic-plus',
+  'spray-bottle',
+  
+  // 工具/設備
+  'toolbox',
+  'wrench',
+  'hammer',
+  'screwdriver',
+  'cog',
+  
+  // 通訊/社交
+  'email',
+  'message',
+  'account',
+  'account-group',
+  'account-multiple',
+  
+  // 其他常用
+  'calendar',
+  'clock',
+  'clock-outline',
+  'alarm',
+  'timer',
+  'compass',
+  'binoculars',
+  'tent',
+  'beach',
+  'palette',
+  'microphone',
+  'party-popper',
+  'ring',
+  'car-key',
+
+  // 我要來檢查icon是否正確顯示的區塊
 ] as const;
 
 interface IconPickerProps {
