@@ -45,3 +45,6 @@ export const APP_INFO = {
   version: '1.0.0',
   description: '專為解決「出門前遺忘重要物品」的焦慮而設計',
 } as const;
+
+// 開發模式標誌（上線時設為 false）
+export const IS_DEV_MODE = __DEV__;

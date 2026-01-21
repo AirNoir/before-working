@@ -23,6 +23,8 @@ import {requestNotificationPermission, sendTestNotification} from '@utils/notifi
 import {parseTimeString, formatTime, formatTimeForDisplay} from '@utils/helpers';
 import {getPermissionDescription, isPremiumUser} from '@utils/permission';
 import {supportedLanguages, type SupportedLanguage} from '@locales/index';
+import {IS_DEV_MODE} from '@constants/config';
+import {UserPermission} from '@/types';
 
 interface SettingsScreenProps {
   navigation: any;
@@ -30,8 +32,14 @@ interface SettingsScreenProps {
 
 export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
   const {t, i18n} = useTranslation();
-  const {settings, updateNotificationSettings, updateLanguage, updateResetTime, resetToDefaults} =
-    useAppStore();
+  const {
+    settings,
+    updateNotificationSettings,
+    updateLanguage,
+    updateResetTime,
+    resetToDefaults,
+    updateUserPermission,
+  } = useAppStore();
   const [showTimePicker, setShowTimePicker] = useState(false);
   const [showResetTimePicker, setShowResetTimePicker] = useState(false);
   const [tempTime, setTempTime] = useState(parseTimeString(settings.notification.time));
@@ -357,6 +365,38 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
                 }
               />
             </>
+          )}
+
+          {/* 開發模式：切換身份按鈕 */}
+          {IS_DEV_MODE && (
+            <View className="mt-4 pt-4 border-t border-gray-200">
+              <Text className="text-gray-500 text-xs mb-2">
+                {t('settings.account.devMode')}
+              </Text>
+              <Button
+                title={
+                  settings.userPermission === UserPermission.PREMIUM
+                    ? t('settings.account.switchToFree')
+                    : t('settings.account.switchToPremium')
+                }
+                variant="outline"
+                onPress={() => {
+                  const newPermission =
+                    settings.userPermission === UserPermission.PREMIUM
+                      ? UserPermission.FREE
+                      : UserPermission.PREMIUM;
+                  updateUserPermission(newPermission);
+                  Alert.alert(
+                    t('settings.account.permissionChanged'),
+                    t('settings.account.permissionChangedMessage', {
+                      permission: getPermissionDescription(newPermission),
+                    }),
+                  );
+                }}
+                className="border-2 border-orange-200"
+                textClassName="text-orange-200 font-semibold"
+              />
+            </View>
           )}
         </View>
 

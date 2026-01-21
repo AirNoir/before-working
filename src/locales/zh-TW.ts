@@ -76,6 +76,11 @@ export default {
       upgradeButton: '升級到付費版',
       comingSoon: '即將推出',
       comingSoonMessage: '付費功能即將上線，敬請期待！',
+      devMode: '開發模式',
+      switchToFree: '切換到免費版',
+      switchToPremium: '切換到付費版',
+      permissionChanged: '權限已切換',
+      permissionChangedMessage: '當前權限：{{permission}}',
     },
     about: {
       title: '關於應用',
