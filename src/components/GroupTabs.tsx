@@ -18,6 +18,7 @@ interface GroupTabsProps {
   onSelectGroup: (groupId: string | null) => void;
   onCreateGroup: (name: string) => void;
   onUpdateGroup?: (groupId: string, name: string) => void;
+  onDeleteGroup?: (groupId: string) => void; // 刪除分類
   userPermission: UserPermission;
   onShowUpgrade?: () => void; // 顯示升級提示
   onImportTemplate?: (templateId: string) => void; // 引入分類套組
@@ -29,6 +30,7 @@ export const GroupTabs: React.FC<GroupTabsProps> = ({
   onSelectGroup,
   onCreateGroup,
   onUpdateGroup,
+  onDeleteGroup,
   userPermission,
   onShowUpgrade,
   onImportTemplate,
@@ -117,6 +119,30 @@ export const GroupTabs: React.FC<GroupTabsProps> = ({
   const handleCancelEdit = () => {
     setEditingGroupId(null);
     setEditGroupName('');
+  };
+
+  const handleDeleteGroup = (group: ChecklistGroup) => {
+    if (!onDeleteGroup) return;
+
+    Alert.alert(
+      t('group.deleteConfirm'),
+      t('group.deleteMessage', {name: group.name}),
+      [
+        {text: t('common.cancel'), style: 'cancel'},
+        {
+          text: t('common.confirm'),
+          style: 'destructive',
+          onPress: () => {
+            onDeleteGroup(group.id);
+            // 如果刪除的是正在編輯的分組，取消編輯狀態
+            if (editingGroupId === group.id) {
+              setEditingGroupId(null);
+              setEditGroupName('');
+            }
+          },
+        },
+      ],
+    );
   };
 
   const handleOpenManageDialog = () => {
@@ -251,15 +277,28 @@ export const GroupTabs: React.FC<GroupTabsProps> = ({
                   // 顯示模式
                   <View className="flex-row items-center justify-between bg-gray-50 rounded-lg p-3">
                     <Text className="text-textPrimary font-semibold flex-1">{group.name}</Text>
-                    <TouchableOpacity
-                      onPress={() => handleStartEdit(group)}
-                      className="ml-2">
-                      <MaterialCommunityIcons
-                        name="pencil"
-                        size={18}
-                        color={COLORS.blue[600]}
-                      />
-                    </TouchableOpacity>
+                    <View className="flex-row items-center gap-2">
+                      <TouchableOpacity
+                        onPress={() => handleStartEdit(group)}
+                        className="ml-2">
+                        <MaterialCommunityIcons
+                          name="pencil"
+                          size={18}
+                          color={COLORS.blue[600]}
+                        />
+                      </TouchableOpacity>
+                      {onDeleteGroup && (
+                        <TouchableOpacity
+                          onPress={() => handleDeleteGroup(group)}
+                          className="ml-2">
+                          <MaterialCommunityIcons
+                            name="delete"
+                            size={18}
+                            color={COLORS.warning}
+                          />
+                        </TouchableOpacity>
+                      )}
+                    </View>
                   </View>
                 )}
               </View>

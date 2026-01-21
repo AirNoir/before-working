@@ -61,6 +61,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     createGroup,
     createChecklist,
     updateGroupName,
+    deleteGroup,
     importGroupTemplate,
   } = useAppStore();
 
@@ -258,6 +259,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
           onSelectGroup={handleSelectGroup}
           onCreateGroup={handleCreateGroup}
           onUpdateGroup={updateGroupName}
+          onDeleteGroup={deleteGroup}
           userPermission={settings.userPermission}
           onShowUpgrade={() => navigation.navigate('Settings')}
           onImportTemplate={importGroupTemplate}
