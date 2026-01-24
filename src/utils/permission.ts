@@ -3,7 +3,7 @@
  * 處理免費版與付費版的權限控制（預留未來擴展）
  */
 
-import {UserPermission} from '@types/index';
+import {UserPermission} from '@/types';
 import {PERMISSION_LIMITS} from '@constants/config';
 import i18n from '@locales/index';
 
@@ -87,14 +87,33 @@ export const canUseCloudSync = (userPermission: UserPermission): boolean => {
 };
 
 /**
- * 模擬升級到付費版（未來需要對接支付系統）
+ * 升級到付費版
+ * @param productType 產品類型：'lifetime' | 'monthly' | 'yearly'
  * @returns 成功返回 true，失敗返回 false
  */
-export const upgradeToPremium = async (): Promise<boolean> => {
-  // TODO: 對接實際的支付系統 (IAP - In-App Purchase)
-  // 這裡僅作為預留接口
+export const upgradeToPremium = async (
+  productType: 'lifetime' | 'monthly' | 'yearly' = 'lifetime',
+): Promise<boolean> => {
+  const {purchaseProduct, PRODUCT_IDS} = await import('./purchase');
+  
+  const productId =
+    productType === 'lifetime'
+      ? PRODUCT_IDS.PREMIUM_LIFETIME
+      : productType === 'monthly'
+        ? PRODUCT_IDS.PREMIUM_MONTHLY
+        : PRODUCT_IDS.PREMIUM_YEARLY;
 
-  return false;
+  return new Promise((resolve, reject) => {
+    purchaseProduct(
+      productId,
+      () => {
+        resolve(true);
+      },
+      (error) => {
+        reject(new Error(error));
+      },
+    );
+  });
 };
 
 /**

@@ -21,10 +21,11 @@ import {COLORS} from '@constants/colors';
 import {APP_INFO} from '@constants/config';
 import {requestNotificationPermission, sendTestNotification} from '@utils/notification';
 import {parseTimeString, formatTime, formatTimeForDisplay} from '@utils/helpers';
-import {getPermissionDescription, isPremiumUser} from '@utils/permission';
+import {getPermissionDescription, isPremiumUser, upgradeToPremium} from '@utils/permission';
 import {supportedLanguages, type SupportedLanguage} from '@locales/index';
-import {IS_DEV_MODE} from '@constants/config';
+import {IS_DEV_MODE, FEATURE_FLAGS} from '@constants/config';
 import {UserPermission} from '@/types';
+import {restorePurchases} from '@utils/purchase';
 
 interface SettingsScreenProps {
   navigation: any;
@@ -151,6 +152,93 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
         },
       },
     ]);
+  };
+
+  const handleUpgrade = async () => {
+    if (!FEATURE_FLAGS.ENABLE_IAP) {
+      // 審核階段：顯示「即將推出」
+      Alert.alert(
+        t('settings.account.comingSoon'),
+        t('settings.account.comingSoonMessage'),
+      );
+      return;
+    }
+
+    // 顯示購買選項
+    Alert.alert(
+      t('settings.account.purchaseTitle'),
+      '請選擇您想要的付費版類型',
+      [
+        {text: t('common.cancel'), style: 'cancel'},
+        {
+          text: t('settings.account.purchaseLifetime'),
+          onPress: async () => {
+            try {
+              await upgradeToPremium('lifetime');
+              Alert.alert(
+                t('settings.account.purchaseSuccess'),
+                t('settings.account.purchaseSuccessMessage'),
+              );
+            } catch (error: any) {
+              if (error.message.includes('取消')) {
+                Alert.alert(t('settings.account.purchaseCanceled'));
+              } else {
+                Alert.alert(
+                  t('settings.account.purchaseFailed'),
+                  error.message || t('common.error'),
+                );
+              }
+            }
+          },
+        },
+        {
+          text: t('settings.account.purchaseMonthly'),
+          onPress: async () => {
+            try {
+              await upgradeToPremium('monthly');
+              Alert.alert(
+                t('settings.account.purchaseSuccess'),
+                t('settings.account.purchaseSuccessMessage'),
+              );
+            } catch (error: any) {
+              if (error.message.includes('取消')) {
+                Alert.alert(t('settings.account.purchaseCanceled'));
+              } else {
+                Alert.alert(
+                  t('settings.account.purchaseFailed'),
+                  error.message || t('common.error'),
+                );
+              }
+            }
+          },
+        },
+      ],
+    );
+  };
+
+  const handleRestorePurchases = async () => {
+    try {
+      await restorePurchases(
+        () => {
+          Alert.alert(
+            t('settings.account.restoreSuccess'),
+            t('settings.account.restoreSuccessMessage'),
+          );
+        },
+        (error) => {
+          if (error.includes('未找到')) {
+            Alert.alert(
+              t('settings.account.restoreFailed'),
+              t('settings.account.restoreNotFound'),
+            );
+          } else {
+            Alert.alert(t('settings.account.restoreFailed'), error);
+          }
+        },
+      );
+    } catch (error: any) {
+      Alert.alert(t('settings.account.restoreFailed'), error.message || t('common.error'));
+    }
   };
 
   return (
@@ -358,13 +446,17 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
               <Button
                 title={t('settings.account.upgradeButton')}
                 variant="success"
-                onPress={() =>
-                  Alert.alert(
-                    t('settings.account.comingSoon'),
-                    t('settings.account.comingSoonMessage'),
-                  )
-                }
+                onPress={handleUpgrade}
               />
+              {FEATURE_FLAGS.ENABLE_IAP && (
+                <Button
+                  title={t('settings.account.restorePurchases')}
+                  variant="outline"
+                  onPress={handleRestorePurchases}
+                  className="mt-2 border-2 border-gray-300"
+                  textClassName="text-gray-600"
+                />
+              )}
             </>
           )}
 
