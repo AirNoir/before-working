@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import {View, Text, TouchableOpacity, StyleSheet, ActivityIndicator} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, ActivityIndicator, Image} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {COLORS} from '@constants/colors';
 import {useWeather} from '@hooks/useWeather';
@@ -28,6 +28,7 @@ export const Header: React.FC<HeaderProps> = ({title, leftButton, rightButton}) 
       className="bg-primary px-4 py-4 flex-row justify-between items-center border-b-[2px] border-lavender"
       style={styles.header}>
       {/* 左側區域：按鈕 + 天氣 */}
+     <Image source={require('../../assets/logo.png')} style={{width: 50, height: 50}} />
       <View className="flex-row items-center" style={styles.leftSection}>
         {/* 左側按鈕 */}
         {leftButton && (

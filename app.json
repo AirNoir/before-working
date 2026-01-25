@@ -5,7 +5,9 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "userInterfaceStyle": "light",
+    "logo": "./assets/logo.png",
     "splash": {
+      "image": "./assets/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#0ABAB5"
     },
@@ -54,7 +56,16 @@
           "locationAlwaysAndWhenInUsePermission": "需要位置權限以獲取您所在地區的天氣資訊"
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/logo.png",
+          "backgroundColor": "#0ABAB5",
+          "resizeMode": "contain",
+          "imageWidth": 140
+        }
+      ]
     ]
   }
 }

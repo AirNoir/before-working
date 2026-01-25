@@ -3,7 +3,8 @@
  */
 
 import React, {useEffect} from 'react';
-import {StatusBar, AppState} from 'react-native';
+import {StatusBar, AppState, View, Image, StyleSheet} from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useAppStore} from './src/store/useAppStore';
@@ -20,6 +21,10 @@ import './src/locales';
 
 const Stack = createNativeStackNavigator();
 
+SplashScreen.preventAutoHideAsync().catch(() => {
+  // noop: 避免在重複調用或特定環境下拋錯
+});
+
 const App: React.FC = () => {
   const initialize = useAppStore(state => state.initialize);
   const isLoading = useAppStore(state => state.isLoading);
@@ -29,15 +34,27 @@ const App: React.FC = () => {
   useEffect(() => {
     // 初始化應用
     const initApp = async () => {
-      // 初始化通知系統
-      await initializeNotifications();
+      try {
+        // 初始化通知系統
+        await initializeNotifications();
 
-      // 初始化應用狀態
-      await initialize();
+        // 初始化應用狀態
+        await initialize();
+      } catch (error) {
+        console.error('初始化應用時發生錯誤:', error);
+      }
     };
 
     initApp();
   }, [initialize]);
+
+  useEffect(() => {
+    if (!isLoading) {
+      SplashScreen.hideAsync().catch(() => {
+        // noop
+      });
+    }
+  }, [isLoading]);
 
   // 監聽應用狀態變化，當應用從後台恢復時檢查重置時間
   useEffect(() => {
@@ -56,8 +73,12 @@ const App: React.FC = () => {
   }, [settings.resetTime, resetAllChecklists]);
 
   if (isLoading) {
-    // 可以在這裡添加啟動畫面
-    return null;
+    // Expo Go 也能看到的 JS 啟動畫面
+    return (
+      <View style={styles.splashContainer}>
+        <Image source={require('./assets/logo.png')} style={styles.splashLogo} />
+      </View>
+    );
   }
 
   return (
@@ -78,3 +99,17 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+const styles = StyleSheet.create({
+  splashContainer: {
+    flex: 1,
+    backgroundColor: COLORS.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  splashLogo: {
+    width: 140,
+    height: 140,
+    resizeMode: 'contain',
+  },
+});
