@@ -8,6 +8,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import {useTranslation} from 'react-i18next';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
+import DraggableFlatList, {ScaleDecorator} from 'react-native-draggable-flatlist';
 import {useAppStore} from '@store/useAppStore';
 import {
   Header,
@@ -20,22 +21,6 @@ import {
 import {COLORS} from '@constants/colors';
 import {DEFAULT_CHECKLIST_NAME} from '@constants/config';
 import type {ChecklistItem, Checklist} from '@/types';
-
-// 动态导入 DraggableFlatList，如果失败则使用普通 FlatList
-let DraggableFlatList: any = null;
-let ScaleDecorator: any = null;
-let isDraggableAvailable = false;
-
-try {
-  const draggableModule = require('react-native-draggable-flatlist');
-  DraggableFlatList = draggableModule.default;
-  ScaleDecorator = draggableModule.ScaleDecorator;
-  isDraggableAvailable = true;
-} catch (error) {
-  // 如果无法加载，使用普通 FlatList
-  console.warn('DraggableFlatList not available, using regular FlatList');
-  isDraggableAvailable = false;
-}
 
 interface HomeScreenProps {
   navigation: any;
@@ -157,31 +142,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     reorderItems(activeChecklist.id, data);
   };
 
-  const handleMoveUp = (itemId: string) => {
-    if (!activeChecklist?.id) return;
-    const items = [...activeChecklist.items];
-    const currentIndex = items.findIndex(i => i.id === itemId);
-    
-    if (currentIndex > 0) {
-      // 交換當前項目和上一個項目
-      [items[currentIndex], items[currentIndex - 1]] = [
-        items[currentIndex - 1],
-        items[currentIndex],
-      ];
-      // 更新 order
-      items.forEach((item, index) => {
-        item.order = index;
-      });
-      reorderItems(activeChecklist.id, items);
-    }
-  };
-
   // 渲染列表项
   const renderItem = (params: any) => {
     if (!activeChecklist?.id) return null;
 
-    const {item, drag, isActive, index} = params;
-    const isFirst = index === 0;
+    const {item, drag, isActive} = params;
     const itemContent = (
       <ChecklistItemCard
         id={item.id}
@@ -193,17 +158,11 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
         onUpdate={newTitle => updateItem(activeChecklist.id, item.id, newTitle)}
         drag={drag}
         isActive={isActive}
-        isFirst={isFirst}
-        onMoveUp={!isFirst ? () => handleMoveUp(item.id) : undefined}
       />
     );
 
-    // 如果支持拖拽，使用 ScaleDecorator
-    if (isDraggableAvailable && ScaleDecorator) {
-      return <ScaleDecorator>{itemContent}</ScaleDecorator>;
-    }
-
-    return itemContent;
+    // 使用 ScaleDecorator 包裝以支持拖拽動畫
+    return <ScaleDecorator>{itemContent}</ScaleDecorator>;
   };
 
   // 渲染清單選擇器
@@ -325,32 +284,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
                 {t('home.emptyListHint')}
               </Text>
             </View>
-          ) : isDraggableAvailable && DraggableFlatList ? (
+          ) : (
             <DraggableFlatList
               data={activeChecklist.items}
               renderItem={renderItem}
               keyExtractor={(item: ChecklistItem) => item.id}
               onDragEnd={({data}: {data: ChecklistItem[]}) => handleReorder(data)}
-              showsVerticalScrollIndicator={false}
-              ListFooterComponent={
-                <View className="py-4">
-                  <Button
-                    title={t('home.clearAllItems')}
-                    variant="outline"
-                    onPress={handleClearAllItemsInGroup}
-                    className="border-2 border-warning"
-                    textClassName="text-warning font-semibold"
-                  />
-                </View>
-              }
-            />
-          ) : (
-            <FlatList
-              data={activeChecklist.items}
-              renderItem={({item, index}: {item: ChecklistItem; index: number}) =>
-                renderItem({item, drag: undefined, isActive: false, index})
-              }
-              keyExtractor={(item: ChecklistItem) => item.id}
               showsVerticalScrollIndicator={false}
               ListFooterComponent={
                 <View className="py-4">

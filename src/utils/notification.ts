@@ -89,11 +89,13 @@ export const scheduleDailyNotification = async (
       body: settings.body,
       sound: true,
       priority: Notifications.AndroidNotificationPriority.HIGH,
+      ...(Platform.OS === 'android' && { channelId: NOTIFICATION_CHANNEL.id }),
     },
     trigger: {
       hour: hours,
       minute: minutes,
       repeats: true,
+      channelId: Platform.OS === 'android' ? NOTIFICATION_CHANNEL.id : undefined,
     },
   });
 
@@ -129,8 +131,9 @@ export const sendTestNotification = async (title: string, body: string): Promise
       body,
       sound: true,
       priority: Notifications.AndroidNotificationPriority.HIGH,
+      ...(Platform.OS === 'android' && { channelId: NOTIFICATION_CHANNEL.id }),
     },
-    trigger: null, // 立即發送
+    trigger: { seconds: 1 }, // 1秒後發送（立即發送效果）
   });
 };
 

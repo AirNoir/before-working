@@ -19,8 +19,6 @@ interface ChecklistItemCardProps {
   onUpdate: (newTitle: string) => void;
   drag?: () => void; // 拖拽句柄
   isActive?: boolean; // 是否正在拖拽
-  isFirst?: boolean; // 是否為第一個項目
-  onMoveUp?: () => void; // 向上移動
 }
 
 export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
@@ -32,8 +30,6 @@ export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
   onUpdate,
   drag,
   isActive = false,
-  isFirst = false,
-  onMoveUp,
 }) => {
   const {t} = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
@@ -63,13 +59,9 @@ export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
           isActive ? 'opacity-70' : ''
         }`}
         style={styles.card}>
-        {/* 向上移動按鈕（第一個項目不顯示，但保持寬度） */}
-        <View className="mr-3 py-2" style={{width: 20, alignItems: 'center'}}>
-          {!isFirst && onMoveUp && (
-            <TouchableOpacity onPress={onMoveUp} activeOpacity={0.7}>
-              <MaterialCommunityIcons name="chevron-up" size={20} color={COLORS.gray[400]} />
-            </TouchableOpacity>
-          )}
+        {/* 拖拽圖標 */}
+        <View className="mr-3 py-2" style={{width: 24, alignItems: 'center'}}>
+          <MaterialCommunityIcons name="drag" size={20} color={COLORS.gray[400]} />
         </View>
 
         {/* 勾選框 */}
