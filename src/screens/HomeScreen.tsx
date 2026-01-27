@@ -157,11 +157,31 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     reorderItems(activeChecklist.id, data);
   };
 
+  const handleMoveUp = (itemId: string) => {
+    if (!activeChecklist?.id) return;
+    const items = [...activeChecklist.items];
+    const currentIndex = items.findIndex(i => i.id === itemId);
+    
+    if (currentIndex > 0) {
+      // 交換當前項目和上一個項目
+      [items[currentIndex], items[currentIndex - 1]] = [
+        items[currentIndex - 1],
+        items[currentIndex],
+      ];
+      // 更新 order
+      items.forEach((item, index) => {
+        item.order = index;
+      });
+      reorderItems(activeChecklist.id, items);
+    }
+  };
+
   // 渲染列表项
   const renderItem = (params: any) => {
     if (!activeChecklist?.id) return null;
 
-    const {item, drag, isActive} = params;
+    const {item, drag, isActive, index} = params;
+    const isFirst = index === 0;
     const itemContent = (
       <ChecklistItemCard
         id={item.id}
@@ -173,6 +193,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
         onUpdate={newTitle => updateItem(activeChecklist.id, item.id, newTitle)}
         drag={drag}
         isActive={isActive}
+        isFirst={isFirst}
+        onMoveUp={!isFirst ? () => handleMoveUp(item.id) : undefined}
       />
     );
 
@@ -325,8 +347,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
           ) : (
             <FlatList
               data={activeChecklist.items}
-              renderItem={({item}: {item: ChecklistItem}) =>
-                renderItem({item, drag: undefined, isActive: false})
+              renderItem={({item, index}: {item: ChecklistItem; index: number}) =>
+                renderItem({item, drag: undefined, isActive: false, index})
               }
               keyExtractor={(item: ChecklistItem) => item.id}
               showsVerticalScrollIndicator={false}

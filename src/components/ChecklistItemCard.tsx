@@ -4,7 +4,7 @@
  */
 
 import React, {useState} from 'react';
-import {View, Text, TouchableOpacity, TextInput, Alert, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, TextInput, Alert, StyleSheet, Pressable} from 'react-native';
 import {MaterialCommunityIcons} from '@expo/vector-icons';
 import {useTranslation} from 'react-i18next';
 import {COLORS} from '@constants/colors';
@@ -19,6 +19,8 @@ interface ChecklistItemCardProps {
   onUpdate: (newTitle: string) => void;
   drag?: () => void; // 拖拽句柄
   isActive?: boolean; // 是否正在拖拽
+  isFirst?: boolean; // 是否為第一個項目
+  onMoveUp?: () => void; // 向上移動
 }
 
 export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
@@ -30,6 +32,8 @@ export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
   onUpdate,
   drag,
   isActive = false,
+  isFirst = false,
+  onMoveUp,
 }) => {
   const {t} = useTranslation();
   const [isEditing, setIsEditing] = useState(false);
@@ -53,64 +57,70 @@ export const ChecklistItemCard: React.FC<ChecklistItemCardProps> = ({
   };
 
   return (
-    <View
-      className={`bg-white rounded-lg p-4 mb-3 flex-row items-center shadow-sm ${
-        isActive ? 'opacity-70' : ''
-      }`}
-      style={styles.card}>
-      {/* 拖拽句柄 */}
-      <TouchableOpacity onLongPress={drag} className="mr-3 py-2">
-        <MaterialCommunityIcons name="drag" size={20} color={COLORS.gray[400]} />
-      </TouchableOpacity>
-
-      {/* 勾選框 */}
-      <TouchableOpacity onPress={onToggle} className="mr-3">
-        <View
-          className={`w-6 h-6 rounded border-2 items-center justify-center ${
-            checked ? 'bg-success border-success' : 'border-gray-300'
-          }`}>
-          {checked && <Text className="text-white text-sm font-bold">✓</Text>}
+    <Pressable onLongPress={drag} delayLongPress={300}>
+      <View
+        className={`bg-white rounded-lg p-4 mb-3 flex-row items-center shadow-sm ${
+          isActive ? 'opacity-70' : ''
+        }`}
+        style={styles.card}>
+        {/* 向上移動按鈕（第一個項目不顯示，但保持寬度） */}
+        <View className="mr-3 py-2" style={{width: 20, alignItems: 'center'}}>
+          {!isFirst && onMoveUp && (
+            <TouchableOpacity onPress={onMoveUp} activeOpacity={0.7}>
+              <MaterialCommunityIcons name="chevron-up" size={20} color={COLORS.gray[400]} />
+            </TouchableOpacity>
+          )}
         </View>
-      </TouchableOpacity>
 
-      {/* 圖示 */}
-      {
-        <View className="mr-3">
-          <MaterialCommunityIcons
-            name={(icon as any) || 'star'}
-            size={24}
-            color={checked ? COLORS.gray[400] : COLORS.primary}
-          />
+        {/* 勾選框 */}
+        <TouchableOpacity onPress={onToggle} className="mr-3">
+          <View
+            className={`w-6 h-6 rounded border-2 items-center justify-center ${
+              checked ? 'bg-success border-success' : 'border-gray-300'
+            }`}>
+            {checked && <Text className="text-white text-sm font-bold">✓</Text>}
+          </View>
+        </TouchableOpacity>
+
+        {/* 圖示 */}
+        {
+          <View className="mr-3">
+            <MaterialCommunityIcons
+              name={(icon as any) || 'star'}
+              size={24}
+              color={checked ? COLORS.gray[400] : COLORS.primary}
+            />
+          </View>
+        }
+
+        {/* 內容區域 */}
+        <View className="flex-1">
+          {isEditing ? (
+            <TextInput
+              className="text-xl text-textPrimary border-b border-primary pb-1"
+              value={editText}
+              onChangeText={setEditText}
+              onBlur={handleSave}
+              onSubmitEditing={handleSave}
+              autoFocus
+              selectTextOnFocus
+            />
+          ) : (
+            <TouchableOpacity onPress={() => setIsEditing(true)}>
+              <Text
+                className={`text-lg ${checked ? 'text-gray-400 line-through' : 'text-textPrimary'}`}>
+                {title}
+              </Text>
+            </TouchableOpacity>
+          )}
         </View>
-      }
 
-      {/* 內容區域 */}
-      <View className="flex-1">
-        {isEditing ? (
-          <TextInput
-            className="text-xl text-textPrimary border-b border-primary pb-1"
-            value={editText}
-            onChangeText={setEditText}
-            onBlur={handleSave}
-            onSubmitEditing={handleSave}
-            autoFocus
-            selectTextOnFocus
-          />
-        ) : (
-          <TouchableOpacity onPress={() => setIsEditing(true)}>
-            <Text
-              className={`text-lg ${checked ? 'text-gray-400 line-through' : 'text-textPrimary'}`}>
-              {title}
-            </Text>
-          </TouchableOpacity>
-        )}
+        {/* 刪除按鈕 */}
+        <TouchableOpacity onPress={handleDelete} className="ml-3 p-2">
+          <MaterialCommunityIcons name="close" size={20} color={COLORS.warning} />
+        </TouchableOpacity>
       </View>
-
-      {/* 刪除按鈕 */}
-      <TouchableOpacity onPress={handleDelete} className="ml-3 p-2">
-        <MaterialCommunityIcons name="close" size={20} color={COLORS.warning} />
-      </TouchableOpacity>
-    </View>
+    </Pressable>
   );
 };
 
