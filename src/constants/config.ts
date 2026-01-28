@@ -52,7 +52,7 @@ export const IS_DEV_MODE = __DEV__;
 // 功能開關
 export const FEATURE_FLAGS = {
   // 是否啟用內購功能（審核時設為 false，審核通過後改為 true）
-  ENABLE_IAP: false,
+  ENABLE_IAP: true,
   
   // 是否顯示付費功能入口（審核時設為 true，讓審核員看到）
   SHOW_PREMIUM_FEATURES: true,

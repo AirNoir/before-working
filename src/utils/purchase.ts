@@ -11,9 +11,10 @@ import {FEATURE_FLAGS} from '@constants/config';
 
 // 產品 ID（需要在 App Store Connect 中配置）
 export const PRODUCT_IDS = {
-  PREMIUM_LIFETIME: 'com.checkreadydiandianming.premium', // 一次性購買
-  PREMIUM_MONTHLY: 'com.checkreadydiandianming.premium_monthly', // 月度訂閱
-  PREMIUM_YEARLY: 'com.checkreadydiandianming.premium_yearly', // 年度訂閱
+  PREMIUM_LIFETIME: 'com.tyrese.diandianming.premium', // 一次性購買
+  // 以下訂閱選項暫時未啟用，之後開放訂閱功能時取消註解
+  // PREMIUM_MONTHLY: 'com.tyrese.diandianming.premium_monthly', // 月度訂閱
+  // PREMIUM_YEARLY: 'com.tyrese.diandianming.premium_yearly', // 年度訂閱
 } as const;
 
 // 動態導入 expo-in-app-purchases（如果未安裝則為 null）
@@ -97,8 +98,9 @@ export const getAvailableProducts = async () => {
   try {
     const products = await InAppPurchases.getProductsAsync([
       PRODUCT_IDS.PREMIUM_LIFETIME,
-      PRODUCT_IDS.PREMIUM_MONTHLY,
-      PRODUCT_IDS.PREMIUM_YEARLY,
+      // 以下訂閱選項暫時未啟用
+      // PRODUCT_IDS.PREMIUM_MONTHLY,
+      // PRODUCT_IDS.PREMIUM_YEARLY,
     ]);
 
     return products.results || [];

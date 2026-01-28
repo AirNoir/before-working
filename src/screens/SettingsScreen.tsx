@@ -164,10 +164,10 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
       return;
     }
 
-    // 顯示購買選項
+    // 顯示購買選項（目前僅提供終身購買，訂閱選項暫時關閉）
     Alert.alert(
       t('settings.account.purchaseTitle'),
-      '請選擇您想要的付費版類型',
+      '',
       [
         {text: t('common.cancel'), style: 'cancel'},
         {
@@ -191,27 +191,28 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
             }
           },
         },
-        {
-          text: t('settings.account.purchaseMonthly'),
-          onPress: async () => {
-            try {
-              await upgradeToPremium('monthly');
-              Alert.alert(
-                t('settings.account.purchaseSuccess'),
-                t('settings.account.purchaseSuccessMessage'),
-              );
-            } catch (error: any) {
-              if (error.message.includes('取消')) {
-                Alert.alert(t('settings.account.purchaseCanceled'));
-              } else {
-                Alert.alert(
-                  t('settings.account.purchaseFailed'),
-                  error.message || t('common.error'),
-                );
-              }
-            }
-          },
-        },
+        // 以下訂閱選項暫時關閉，之後開放時取消註解
+        // {
+        //   text: t('settings.account.purchaseMonthly'),
+        //   onPress: async () => {
+        //     try {
+        //       await upgradeToPremium('monthly');
+        //       Alert.alert(
+        //         t('settings.account.purchaseSuccess'),
+        //         t('settings.account.purchaseSuccessMessage'),
+        //       );
+        //     } catch (error: any) {
+        //       if (error.message.includes('取消')) {
+        //         Alert.alert(t('settings.account.purchaseCanceled'));
+        //       } else {
+        //         Alert.alert(
+        //           t('settings.account.purchaseFailed'),
+        //           error.message || t('common.error'),
+        //         );
+        //       }
+        //     }
+        //   },
+        // },
       ],
     );
   };

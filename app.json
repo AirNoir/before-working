@@ -16,7 +16,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.checkmeout.app",
+      "bundleIdentifier": "com.tyrese.diandianming",
       "buildNumber": "1",
       "infoPlist": {
         "UIBackgroundModes": [
@@ -30,13 +30,15 @@
       "adaptiveIcon": {
         "backgroundColor": "#0ABAB5"
       },
-      "package": "com.checkmeout.app",
+      "package": "com.tyrese.diandianming",
       "versionCode": 1,
       "permissions": [
         "RECEIVE_BOOT_COMPLETED",
         "VIBRATE",
         "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION"
+        "ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
       ]
     },
     "web": {
@@ -66,6 +68,11 @@
           "imageWidth": 140
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "6ea40736-980e-4253-acd8-d9ab0e6c6a25"
+      }
+    }
   }
 }
