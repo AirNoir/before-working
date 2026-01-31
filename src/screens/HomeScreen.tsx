@@ -339,6 +339,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
               keyExtractor={(item: ChecklistItem) => item.id}
               onDragEnd={({data}: {data: ChecklistItem[]}) => handleReorder(data)}
               showsVerticalScrollIndicator={false}
+              contentContainerStyle={{paddingBottom: 80}}
               ListFooterComponent={
                 <View className="py-4">
                   <Button
