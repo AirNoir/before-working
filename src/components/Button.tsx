@@ -3,7 +3,7 @@
  */
 
 import React from 'react';
-import {TouchableOpacity, Text, ActivityIndicator, StyleSheet, View} from 'react-native';
+import {TouchableOpacity, Text, ActivityIndicator, View} from 'react-native';
 import {COLORS} from '@constants/colors';
 
 type ButtonVariant = 'primary' | 'warning' | 'success' | 'outline';
@@ -29,20 +29,25 @@ export const Button: React.FC<ButtonProps> = ({
   className = '',
   textClassName,
 }) => {
+  // NativeWind 在處理動態 className（含函式/插值）時，某些情況可能不保證同類型 utility
+  // 的覆蓋順序（例如 bg-*）。為了讓外部傳入的 bg-* 一定生效，若 className 有指定背景色，
+  // 就不在 variant 預設樣式裡再塞一個 bg-*。
+  const hasCustomBgClass = /\bbg-[^\s]+\b/.test(className);
+
   const getButtonStyle = () => {
     const baseStyle = 'px-6 py-3 rounded-lg flex-row items-center justify-center';
 
     switch (variant) {
       case 'primary':
-        return `${baseStyle} bg-primary`;
+        return `${baseStyle} ${hasCustomBgClass ? '' : 'bg-primary'}`.trim();
       case 'warning':
-        return `${baseStyle} bg-warning`;
+        return `${baseStyle} ${hasCustomBgClass ? '' : 'bg-warning'}`.trim();
       case 'success':
-        return `${baseStyle} bg-success`;
+        return `${baseStyle} ${hasCustomBgClass ? '' : 'bg-success'}`.trim();
       case 'outline':
-        return `${baseStyle} bg-transparent border-2 border-primary`;
+        return `${baseStyle} ${hasCustomBgClass ? '' : 'bg-transparent'} border-2 border-primary`.trim();
       default:
-        return `${baseStyle} bg-primary`;
+        return `${baseStyle} ${hasCustomBgClass ? '' : 'bg-primary'}`.trim();
     }
   };
 

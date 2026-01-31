@@ -157,64 +157,54 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
   const handleUpgrade = async () => {
     if (!FEATURE_FLAGS.ENABLE_IAP) {
       // 審核階段：顯示「即將推出」
-      Alert.alert(
-        t('settings.account.comingSoon'),
-        t('settings.account.comingSoonMessage'),
-      );
+      Alert.alert(t('settings.account.comingSoon'), t('settings.account.comingSoonMessage'));
       return;
     }
 
     // 顯示購買選項（目前僅提供終身購買，訂閱選項暫時關閉）
-    Alert.alert(
-      t('settings.account.purchaseTitle'),
-      '',
-      [
-        {text: t('common.cancel'), style: 'cancel'},
-        {
-          text: t('settings.account.purchaseLifetime'),
-          onPress: async () => {
-            try {
-              await upgradeToPremium('lifetime');
-              Alert.alert(
-                t('settings.account.purchaseSuccess'),
-                t('settings.account.purchaseSuccessMessage'),
-              );
-            } catch (error: any) {
-              if (error.message.includes('取消')) {
-                Alert.alert(t('settings.account.purchaseCanceled'));
-              } else {
-                Alert.alert(
-                  t('settings.account.purchaseFailed'),
-                  error.message || t('common.error'),
-                );
-              }
+    Alert.alert(t('settings.account.purchaseTitle'), '', [
+      {text: t('common.cancel'), style: 'cancel'},
+      {
+        text: t('settings.account.purchaseLifetime'),
+        onPress: async () => {
+          try {
+            await upgradeToPremium('lifetime');
+            Alert.alert(
+              t('settings.account.purchaseSuccess'),
+              t('settings.account.purchaseSuccessMessage'),
+            );
+          } catch (error: any) {
+            if (error.message.includes('取消')) {
+              Alert.alert(t('settings.account.purchaseCanceled'));
+            } else {
+              Alert.alert(t('settings.account.purchaseFailed'), error.message || t('common.error'));
             }
-          },
+          }
         },
-        // 以下訂閱選項暫時關閉，之後開放時取消註解
-        // {
-        //   text: t('settings.account.purchaseMonthly'),
-        //   onPress: async () => {
-        //     try {
-        //       await upgradeToPremium('monthly');
-        //       Alert.alert(
-        //         t('settings.account.purchaseSuccess'),
-        //         t('settings.account.purchaseSuccessMessage'),
-        //       );
-        //     } catch (error: any) {
-        //       if (error.message.includes('取消')) {
-        //         Alert.alert(t('settings.account.purchaseCanceled'));
-        //       } else {
-        //         Alert.alert(
-        //           t('settings.account.purchaseFailed'),
-        //           error.message || t('common.error'),
-        //         );
-        //       }
-        //     }
-        //   },
-        // },
-      ],
-    );
+      },
+      // 以下訂閱選項暫時關閉，之後開放時取消註解
+      // {
+      //   text: t('settings.account.purchaseMonthly'),
+      //   onPress: async () => {
+      //     try {
+      //       await upgradeToPremium('monthly');
+      //       Alert.alert(
+      //         t('settings.account.purchaseSuccess'),
+      //         t('settings.account.purchaseSuccessMessage'),
+      //       );
+      //     } catch (error: any) {
+      //       if (error.message.includes('取消')) {
+      //         Alert.alert(t('settings.account.purchaseCanceled'));
+      //       } else {
+      //         Alert.alert(
+      //           t('settings.account.purchaseFailed'),
+      //           error.message || t('common.error'),
+      //         );
+      //       }
+      //     }
+      //   },
+      // },
+    ]);
   };
 
   const handleRestorePurchases = async () => {
@@ -226,12 +216,9 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
             t('settings.account.restoreSuccessMessage'),
           );
         },
-        (error) => {
+        error => {
           if (error.includes('未找到')) {
-            Alert.alert(
-              t('settings.account.restoreFailed'),
-              t('settings.account.restoreNotFound'),
-            );
+            Alert.alert(t('settings.account.restoreFailed'), t('settings.account.restoreNotFound'));
           } else {
             Alert.alert(t('settings.account.restoreFailed'), error);
           }
@@ -464,9 +451,7 @@ export const SettingsScreen: React.FC<SettingsScreenProps> = ({navigation}) => {
           {/* 開發模式：切換身份按鈕 */}
           {IS_DEV_MODE && (
             <View className="mt-4 pt-4 border-t border-gray-200">
-              <Text className="text-gray-500 text-xs mb-2">
-                {t('settings.account.devMode')}
-              </Text>
+              <Text className="text-gray-500 text-xs mb-2">{t('settings.account.devMode')}</Text>
               <Button
                 title={
                   settings.userPermission === UserPermission.PREMIUM

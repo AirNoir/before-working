@@ -44,6 +44,11 @@ const App: React.FC = () => {
 
         // 初始化應用狀態
         await initialize();
+
+        // 初始化完成後檢查是否需要重置
+        const currentSettings = useAppStore.getState().settings;
+        const resetAll = useAppStore.getState().resetAllChecklists;
+        await checkAndResetIfNeeded(currentSettings.resetTime, resetAll);
       } catch (error) {
         console.error('初始化應用時發生錯誤:', error);
       }

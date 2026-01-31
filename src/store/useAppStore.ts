@@ -14,7 +14,7 @@ import type {
 } from '@/types';
 import {UserPermission} from '@/types';
 import {STORAGE_KEYS, DEFAULT_NOTIFICATION, DEFAULT_CHECKLIST_NAME} from '@constants/config';
-import {saveData, getData} from '@utils/storage';
+import {saveData, getData, removeData} from '@utils/storage';
 import {generateId} from '@utils/helpers';
 import {canCreateGroup} from '@utils/permission';
 import {getTemplateById, convertTemplateToGroup} from '@constants/groupTemplates';
@@ -654,13 +654,16 @@ export const useAppStore = create<AppStore>((set, get) => ({
   },
 
   // 更新重置時間設置
-  updateResetTime: time => {
+  updateResetTime: async time => {
     set(state => ({
       settings: {
         ...state.settings,
         resetTime: time,
       },
     }));
+
+    // 清除上次重置日期，讓新的重置時間能夠生效
+    await removeData(STORAGE_KEYS.LAST_RESET_DATE);
 
     get().saveToStorage();
   },

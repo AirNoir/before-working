@@ -124,25 +124,21 @@ export const GroupTabs: React.FC<GroupTabsProps> = ({
   const handleDeleteGroup = (group: ChecklistGroup) => {
     if (!onDeleteGroup) return;
 
-    Alert.alert(
-      t('group.deleteConfirm'),
-      t('group.deleteMessage', {name: group.name}),
-      [
-        {text: t('common.cancel'), style: 'cancel'},
-        {
-          text: t('common.confirm'),
-          style: 'destructive',
-          onPress: () => {
-            onDeleteGroup(group.id);
-            // 如果刪除的是正在編輯的分組，取消編輯狀態
-            if (editingGroupId === group.id) {
-              setEditingGroupId(null);
-              setEditGroupName('');
-            }
-          },
+    Alert.alert(t('group.deleteConfirm'), t('group.deleteMessage', {name: group.name}), [
+      {text: t('common.cancel'), style: 'cancel'},
+      {
+        text: t('common.confirm'),
+        style: 'destructive',
+        onPress: () => {
+          onDeleteGroup(group.id);
+          // 如果刪除的是正在編輯的分組，取消編輯狀態
+          if (editingGroupId === group.id) {
+            setEditingGroupId(null);
+            setEditGroupName('');
+          }
         },
-      ],
-    );
+      },
+    ]);
   };
 
   const handleOpenManageDialog = () => {
@@ -199,7 +195,7 @@ export const GroupTabs: React.FC<GroupTabsProps> = ({
             onPress={handleOpenManageDialog}
             className="px-3 py-2 mr-2"
             activeOpacity={0.7}>
-            <MaterialCommunityIcons name="cog" size={20} color={COLORS.gray[600]} />
+            <MaterialCommunityIcons name="dots-vertical" size={20} color={COLORS.gray[600]} />
           </TouchableOpacity>
         )}
       </View>
@@ -278,24 +274,12 @@ export const GroupTabs: React.FC<GroupTabsProps> = ({
                   <View className="flex-row items-center justify-between bg-gray-50 rounded-lg p-3">
                     <Text className="text-textPrimary font-semibold flex-1">{group.name}</Text>
                     <View className="flex-row items-center gap-2">
-                      <TouchableOpacity
-                        onPress={() => handleStartEdit(group)}
-                        className="ml-2">
-                        <MaterialCommunityIcons
-                          name="pencil"
-                          size={18}
-                          color={COLORS.blue[600]}
-                        />
+                      <TouchableOpacity onPress={() => handleStartEdit(group)} className="ml-2">
+                        <MaterialCommunityIcons name="pencil" size={18} color={COLORS.blue[600]} />
                       </TouchableOpacity>
                       {onDeleteGroup && (
-                        <TouchableOpacity
-                          onPress={() => handleDeleteGroup(group)}
-                          className="ml-2">
-                          <MaterialCommunityIcons
-                            name="delete"
-                            size={18}
-                            color={COLORS.warning}
-                          />
+                        <TouchableOpacity onPress={() => handleDeleteGroup(group)} className="ml-2">
+                          <MaterialCommunityIcons name="delete" size={18} color={COLORS.warning} />
                         </TouchableOpacity>
                       )}
                     </View>

@@ -2,7 +2,7 @@
  * 主頁面 - 清單管理
  */
 
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {View, Text, Alert, ScrollView, FlatList, TouchableOpacity} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
@@ -20,6 +20,8 @@ import {
 } from '@components/index';
 import {COLORS} from '@constants/colors';
 import {DEFAULT_CHECKLIST_NAME} from '@constants/config';
+import {STORAGE_KEYS} from '@constants/config';
+import {saveData, getData} from '@utils/storage';
 import type {ChecklistItem, Checklist} from '@/types';
 
 interface HomeScreenProps {
@@ -40,6 +42,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     toggleItemCheck,
     resetAllItems,
     resetAllItemsInGroup,
+    resetAllChecklists,
     reorderItems,
     setActiveChecklist,
     setActiveGroup,
@@ -49,6 +52,51 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
     deleteGroup,
     importGroupTemplate,
   } = useAppStore();
+
+  // 每分鐘整點檢測重置時間（17:01:00, 17:02:00...）
+  useEffect(() => {
+    if (!settings.resetTime) return;
+
+    let initialTimeoutId: NodeJS.Timeout | null = null;
+    let intervalId: NodeJS.Timeout | null = null;
+
+    const checkAndReset = async () => {
+      const [targetHours, targetMinutes] = settings.resetTime!.split(':').map(Number);
+      const now = new Date();
+      const currentHours = now.getHours();
+      const currentMinutes = now.getMinutes();
+
+      // 檢查是否剛好是重置時間
+      if (currentHours === targetHours && currentMinutes === targetMinutes) {
+        // 檢查今天是否已重置
+        const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        const lastResetDate = await getData<string>(STORAGE_KEYS.LAST_RESET_DATE);
+
+        if (lastResetDate !== today) {
+          resetAllChecklists();
+          await saveData(STORAGE_KEYS.LAST_RESET_DATE, today);
+        }
+      }
+    };
+
+    // 計算到下一個整分鐘的毫秒數
+    const now = new Date();
+    const msUntilNextMinute = (60 - now.getSeconds()) * 1000 - now.getMilliseconds();
+
+    // 先等到下一個整分鐘
+    initialTimeoutId = setTimeout(() => {
+      // 立即檢查一次
+      checkAndReset();
+
+      // 然後每 60 秒（整分鐘）檢查一次
+      intervalId = setInterval(checkAndReset, 60000);
+    }, msUntilNextMinute);
+
+    return () => {
+      if (initialTimeoutId) clearTimeout(initialTimeoutId);
+      if (intervalId) clearInterval(intervalId);
+    };
+  }, [settings.resetTime, resetAllChecklists]);
 
   // 根據選中的分組過濾清單
   const filteredChecklists = React.useMemo(() => {
