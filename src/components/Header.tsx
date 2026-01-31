@@ -21,14 +21,16 @@ interface HeaderProps {
 }
 
 export const Header: React.FC<HeaderProps> = ({title, leftButton, rightButton}) => {
-  const {weather, loading, icon} = useWeather();
+  const {weather, loading, error, icon} = useWeather();
+
+  // 如果有錯誤且沒有天氣資料，不顯示天氣區塊
+  const showWeather = !error || weather !== null;
 
   return (
     <View
       className="bg-primary px-4 py-4 flex-row justify-between items-center border-b-[2px] border-lavender"
       style={styles.header}>
       {/* 左側區域：按鈕 + 天氣 */}
-     <Image source={require('../../assets/logo.png')} style={{width: 50, height: 50}} />
       <View className="flex-row items-center" style={styles.leftSection}>
         {/* 左側按鈕 */}
         {leftButton && (
@@ -41,19 +43,21 @@ export const Header: React.FC<HeaderProps> = ({title, leftButton, rightButton}) 
           </TouchableOpacity>
         )}
 
-        {/* 天氣資訊 */}
-        <View className="flex-row  items-center ml-2">
-          {loading ? (
-            <ActivityIndicator size="small" color={COLORS.backgroundAlt} />
-          ) : weather ? (
-            <>
-              <MaterialCommunityIcons name={icon as any} size={28} color={COLORS.backgroundAlt} />
-              <Text className="text-navy text-xl font-semibold ml-1.5">
-                {weather.minTemperature}°C - {weather.maxTemperature}°C
-              </Text>
-            </>
-          ) : null}
-        </View>
+        {/* 天氣資訊 - 只在有資料或正在載入時顯示 */}
+        {showWeather && (
+          <View className="flex-row  items-center ml-2">
+            {loading ? (
+              <ActivityIndicator size="small" color={COLORS.backgroundAlt} />
+            ) : weather ? (
+              <>
+                <MaterialCommunityIcons name={icon as any} size={28} color={COLORS.backgroundAlt} />
+                <Text className="text-navy text-xl font-semibold ml-1.5">
+                  {weather.minTemperature}°C - {weather.maxTemperature}°C
+                </Text>
+              </>
+            ) : null}
+          </View>
+        )}
       </View>
 
       {/* 標題（居中） */}

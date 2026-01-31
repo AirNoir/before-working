@@ -11,6 +11,7 @@ import {useAppStore} from './src/store/useAppStore';
 import {HomeScreen, SettingsScreen} from './src/screens';
 import {initializeNotifications} from './src/utils/notification';
 import {checkAndResetIfNeeded} from './src/utils/reset';
+import {initializePurchases} from './src/utils/purchase';
 import {COLORS} from './src/constants/colors';
 
 // NativeWind 配置
@@ -37,6 +38,9 @@ const App: React.FC = () => {
       try {
         // 初始化通知系統
         await initializeNotifications();
+
+        // 初始化內購系統 (RevenueCat)
+        await initializePurchases();
 
         // 初始化應用狀態
         await initialize();

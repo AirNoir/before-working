@@ -149,9 +149,13 @@ function getMockWeatherData(locationName: string): WeatherData {
   const baseTemp = 25;
   const tempVariation = Math.sin((hour - 6) * (Math.PI / 12)) * 5;
   const temperature = Math.round(baseTemp + tempVariation);
+  const minTemperature = String(temperature - 3);
+  const maxTemperature = String(temperature + 3);
 
   return {
     temperature,
+    minTemperature,
+    maxTemperature,
     condition,
     conditionText,
     locationName,

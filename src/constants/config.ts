@@ -53,7 +53,17 @@ export const IS_DEV_MODE = __DEV__;
 export const FEATURE_FLAGS = {
   // 是否啟用內購功能（審核時設為 false，審核通過後改為 true）
   ENABLE_IAP: true,
-  
+
   // 是否顯示付費功能入口（審核時設為 true，讓審核員看到）
   SHOW_PREMIUM_FEATURES: true,
 } as const;
+
+// RevenueCat API Keys
+// 請在 RevenueCat Dashboard 取得 API Key 後填入
+export const REVENUECAT_API_KEY = {
+  IOS: 'appl_CMOzQoAKjaeCqpjFqnxdAtWXxYn', // 從 RevenueCat Dashboard → Project Settings → API Keys 取得
+  ANDROID: 'YOUR_ANDROID_API_KEY', // 未來 Android 版本使用
+} as const;
+
+// RevenueCat Entitlement ID
+export const REVENUECAT_ENTITLEMENT_ID = 'com.tyrese.diandianming.premium';
